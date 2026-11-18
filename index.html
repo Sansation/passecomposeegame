@@ -1,0 +1,2951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passé Composé Pet Academy</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka (Display) & Nunito (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       CSS DESIGN TOKENS & DYNAMIC VISUAL THEME VARIABLES
+       ========================================================================== */
+    :root {
+      --app-bg: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f1f5f9 100%);
+      --header-bg: rgba(15, 23, 42, 0.94);
+      --header-border: rgba(99, 102, 241, 0.35);
+      --accent-primary: #4f46e5;
+      --accent-secondary: #f59e0b;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --card-surface: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --hero-grad: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4c1d95 100%);
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--app-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+      transition: background 0.5s ease, color 0.3s ease;
+    }
+
+    h1, h2, h3, .font-display {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .theme-header {
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--header-border);
+    }
+
+    .theme-surface {
+      background: var(--card-surface);
+      border-color: var(--card-border);
+      box-shadow: 0 8px 30px -12px var(--accent-glow);
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .theme-hero {
+      background: var(--hero-grad);
+    }
+
+    /* ==========================================================================
+       KEYFRAME ANIMATIONS (IDLE, PACK UNSEALING, SHIMMER & FLARES)
+       ========================================================================== */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-7px) rotate(1.5deg); }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.75); opacity: 0; }
+      75% { transform: scale(1.04); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes floatUpFade {
+      0% { transform: translateY(0) scale(0.9); opacity: 1; }
+      100% { transform: translateY(-54px) scale(1.18); opacity: 0; }
+    }
+    @keyframes pulseGold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }
+      50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+    }
+    @keyframes packFloat {
+      0%, 100% { transform: translateY(0px) rotate(-1.5deg) scale(1); }
+      50% { transform: translateY(-10px) rotate(1.5deg) scale(1.03); }
+    }
+    @keyframes packShakeBurst {
+      0% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+      15% { transform: scale(1.08) rotate(-5deg); filter: brightness(1.35); }
+      30% { transform: scale(1.13) rotate(6deg); filter: brightness(1.7); }
+      45% { transform: scale(1.18) rotate(-7deg); filter: brightness(2.1); }
+      65% { transform: scale(1.24) rotate(5deg); filter: brightness(2.7); }
+      82% { transform: scale(1.3) rotate(-3deg); filter: brightness(3.4); }
+      100% { transform: scale(0.15) rotate(0deg); opacity: 0; filter: brightness(4.5); }
+    }
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-6px, 4px); }
+      40% { transform: translate(6px, -4px); }
+      60% { transform: translate(-4px, -3px); }
+      80% { transform: translate(4px, 3px); }
+    }
+    @keyframes sunRaysSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes holoShimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes flashScreen {
+      0% { opacity: 0.94; }
+      100% { opacity: 0; }
+    }
+    @keyframes seamGlow {
+      0% { width: 0%; opacity: 0; }
+      40% { width: 140%; opacity: 1; }
+      100% { width: 160%; opacity: 0; }
+    }
+
+    .animate-float { animation: floatSlow 3.2s ease-in-out infinite; }
+    .animate-pop { animation: popIn 0.3s cubic-bezier(0.2, 1, 0.3, 1) forwards; }
+    .animate-claim-pulse { animation: pulseGold 1.6s infinite; }
+    .animate-pack-idle { animation: packFloat 3s ease-in-out infinite; }
+    .animate-pack-rip { animation: packShakeBurst 0.78s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards; }
+    .animate-screen-shake { animation: screenShake 0.45s ease-in-out; }
+    .animate-rays { animation: sunRaysSpin 18s linear infinite; }
+    .animate-screen-flash { animation: flashScreen 0.7s ease-out forwards; }
+    .animate-seam-tear { animation: seamGlow 0.75s ease-out forwards; }
+
+    /* ==========================================================================
+       3D HOLOGRAPHIC TCG CARD FLIP & DYNAMIC TILT
+       ========================================================================== */
+    .tcg-scene {
+      perspective: 1100px;
+    }
+    .tcg-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .tcg-card.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .tcg-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 1.5rem;
+      overflow: hidden;
+    }
+    .tcg-back {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4f46e5 100%);
+      border: 3px solid #fbbf24;
+    }
+    .tcg-front {
+      transform: rotateY(180deg);
+    }
+
+    .holo-foil {
+      background: linear-gradient(125deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.48) 42%, rgba(251,191,36,0.38) 52%, rgba(56,189,248,0.32) 62%, rgba(255,255,255,0) 80%);
+      background-size: 250% 250%;
+      animation: holoShimmer 3.2s ease infinite;
+      pointer-events: none;
+    }
+
+    /* Rarity Card Styling & Radiant Beams */
+    .rarity-Common { border-color: #94a3b8; background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); }
+    .rarity-Rare { border-color: #0ea5e9; background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%); box-shadow: 0 8px 24px rgba(14, 165, 233, 0.25); }
+    .rarity-Epic { border-color: #a855f7; background: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%); box-shadow: 0 10px 28px rgba(168, 85, 247, 0.35); }
+    .rarity-Legendary { border-color: #f59e0b; background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%); box-shadow: 0 12px 34px rgba(245, 158, 11, 0.52); }
+
+    .beam-Common { box-shadow: 0 0 28px rgba(148, 163, 184, 0.45); }
+    .beam-Rare { box-shadow: 0 0 38px rgba(14, 165, 233, 0.72); }
+    .beam-Epic { box-shadow: 0 0 48px rgba(168, 85, 247, 0.88); }
+    .beam-Legendary { box-shadow: 0 0 65px rgba(251, 191, 36, 0.98), 0 0 110px rgba(244, 63, 94, 0.55); }
+
+    .floating-text {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      animation: floatUpFade 1s ease-out forwards;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.28);
+    }
+
+    .btn-3d {
+      transition: all 0.12s ease;
+      box-shadow: 0 3px 0 rgba(15, 23, 42, 0.18);
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.18);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.03); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 99px; }
+  </style>
+</head>
+<body id="app-body" class="antialiased pb-12">
+
+  <!-- Particle & Confetti Canvas -->
+  <canvas id="fx-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- Bright Light Flare Overlay for Card Pulls & Evolutions -->
+  <div id="light-flare-overlay" class="fixed inset-0 pointer-events-none z-40 hidden" style="background: radial-gradient(circle, rgba(255,255,255,0.96) 0%, rgba(253,224,71,0.6) 45%, rgba(99,102,241,0) 78%);"></div>
+
+  <!-- ==================== HEADER WITH TOP-RIGHT HUD ==================== -->
+  <header class="sticky top-0 z-30 theme-header text-white backdrop-blur-md shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand -->
+      <div class="flex items-center gap-3 shrink-0">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-500 flex items-center justify-center text-xl shadow-md">
+          🇫🇷
+        </div>
+        <div>
+          <h1 class="font-display font-bold text-lg sm:text-xl leading-tight text-amber-300">
+            Passé Composé Pet Academy
+          </h1>
+          <p class="text-[11px] font-semibold text-indigo-200 hidden sm:block">
+            50 Core Verbs • Arcane Card Pulls • Paid Habitats
+          </p>
+        </div>
+      </div>
+
+      <!-- Top-Right Glassmorphism HUD -->
+      <div class="flex items-center gap-2 sm:gap-2.5 ml-auto flex-wrap justify-end">
+        <!-- Compact Vault Ready Claim Pill -->
+        <button id="hud-vault-pill" onclick="claimAllVaults()" class="hidden items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-indigo-950 px-3 py-1.5 rounded-2xl font-display font-bold text-xs shadow-md animate-claim-pulse hover:scale-105 transition">
+          <span>💰 Claim Vaults</span>
+          <span id="hud-vault-amount" class="bg-white/90 px-1.5 py-0.5 rounded-lg text-[11px]">+0</span>
+        </button>
+
+        <!-- Coins -->
+        <div class="flex items-center gap-1.5 bg-white/10 border border-amber-400/50 px-3 py-1.5 rounded-2xl">
+          <span class="text-base">🪙</span>
+          <div>
+            <div id="ui-coins" class="font-display font-bold text-amber-300 text-sm sm:text-base leading-none">300</div>
+            <div class="text-[8px] font-extrabold uppercase tracking-wider text-amber-200/75">Coins</div>
+          </div>
+        </div>
+
+        <!-- Croissants -->
+        <div title="Croissant Treats for Pet Boosts!" class="flex items-center gap-1.5 bg-white/10 border border-rose-400/50 px-3 py-1.5 rounded-2xl">
+          <span class="text-base">🥐</span>
+          <div>
+            <div id="ui-treats" class="font-display font-bold text-rose-200 text-sm sm:text-base leading-none">4</div>
+            <div class="text-[8px] font-extrabold uppercase tracking-wider text-rose-200/75">Treats</div>
+          </div>
+        </div>
+
+        <!-- Streak + Shield -->
+        <div class="flex items-center gap-1.5 bg-white/10 border border-orange-400/50 px-3 py-1.5 rounded-2xl">
+          <span class="text-base">🔥</span>
+          <div>
+            <div class="flex items-center gap-1 leading-none">
+              <span id="ui-streak" class="font-display font-bold text-orange-300 text-sm sm:text-base">0</span>
+              <span id="ui-shield-badge" class="hidden text-[10px] bg-sky-500 text-white px-1 rounded font-black" title="Streak Shield Active">🛡️</span>
+            </div>
+            <div id="ui-mult" class="text-[8px] font-extrabold uppercase tracking-wider text-orange-200/75">1.0x</div>
+          </div>
+        </div>
+
+        <!-- Quick Theme Switcher -->
+        <select id="hud-theme-select" onchange="equipTheme(this.value)" title="Switch Unlocked Theme" class="bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-extrabold rounded-2xl px-2.5 py-2 focus:outline-none cursor-pointer">
+        </select>
+
+        <!-- Sound Toggle -->
+        <button id="btn-sound" onclick="toggleSound()" title="Toggle Sound" class="p-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="max-w-7xl mx-auto px-4 pb-2.5 flex gap-2 overflow-x-auto">
+      <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-btn flex items-center gap-1.5 px-4 py-2 rounded-2xl font-display font-bold text-xs sm:text-sm whitespace-nowrap transition bg-amber-400 text-indigo-950 shadow">
+        <span>🎯</span> Quiz Arena
+      </button>
+      <button onclick="switchTab('pets')" id="tab-pets" class="nav-btn flex items-center gap-1.5 px-4 py-2 rounded-2xl font-display font-bold text-xs sm:text-sm whitespace-nowrap transition bg-white/10 hover:bg-white/20 text-indigo-100">
+        <span>🐾</span> My Pets (<span id="ui-pet-count-tab">1</span>)
+      </button>
+      <button onclick="switchTab('gacha')" id="tab-gacha" class="nav-btn flex items-center gap-1.5 px-4 py-2 rounded-2xl font-display font-bold text-xs sm:text-sm whitespace-nowrap transition bg-white/10 hover:bg-white/20 text-indigo-100">
+        <span>🃏</span> Arcane Card Pulls
+      </button>
+      <button onclick="switchTab('zoo')" id="tab-zoo" class="nav-btn flex items-center gap-1.5 px-4 py-2 rounded-2xl font-display font-bold text-xs sm:text-sm whitespace-nowrap transition bg-white/10 hover:bg-white/20 text-indigo-100">
+        <span>🦁</span> Zoo &amp; Breeding
+      </button>
+      <button onclick="switchTab('shop')" id="tab-shop" class="nav-btn flex items-center gap-1.5 px-4 py-2 rounded-2xl font-display font-bold text-xs sm:text-sm whitespace-nowrap transition bg-white/10 hover:bg-white/20 text-indigo-100">
+        <span>🎨</span> Theme Boutique
+      </button>
+    </nav>
+  </header>
+
+  <!-- ==================== MAIN VIEWPORT ==================== -->
+  <main class="max-w-5xl mx-auto px-4 py-6">
+
+    <!-- ==================== VIEW 1: QUIZ ARENA ==================== -->
+    <div id="view-quiz" class="tab-view space-y-4">
+      <div class="theme-surface rounded-3xl p-4 border space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-xs font-black uppercase opacity-50 mr-1">Mode:</span>
+            <button onclick="setQuizMode('mc')" id="qmode-mc" class="qmode-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-indigo-600 text-white shadow-sm">Multiple Choice</button>
+            <button onclick="setQuizMode('type')" id="qmode-type" class="qmode-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-700 hover:bg-indigo-50">Type Answer</button>
+            <button onclick="setQuizMode('aux')" id="qmode-aux" class="qmode-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-700 hover:bg-indigo-50">Avoir vs Être</button>
+            <button onclick="setQuizMode('participle')" id="qmode-participle" class="qmode-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-700 hover:bg-indigo-50">Participle Match</button>
+            <button onclick="setQuizMode('fix')" id="qmode-fix" class="qmode-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-700 hover:bg-indigo-50">Fix Mistake</button>
+          </div>
+
+          <button onclick="openCheatSheet()" class="btn-3d bg-amber-400 hover:bg-amber-300 text-indigo-950 font-extrabold text-xs px-3.5 py-2 rounded-2xl flex items-center gap-1.5">
+            <span>📖</span> 50-Verb Guide
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200/60">
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="quiz-deck-filter" onchange="nextQuestion()" class="bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-extrabold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+              <option value="all">🌟 All 50 Verbs (Complete Mix)</option>
+              <option value="vandertramp">🏠 Être Movement Verbs (Aller, Partir, Sortir, Venir, Mourir, Devenir)</option>
+              <option value="starred">⭐ Irregular &amp; Star Verbs (* &amp; Tricky)</option>
+              <option value="reflexive">🪞 Reflexive Verbs (S'asseoir, Se taire*)</option>
+              <option value="weakest">🎯 Weakest Verbs (Smart Practice)</option>
+            </select>
+
+            <div class="inline-flex rounded-xl bg-slate-100 p-1">
+              <button id="timer-relaxed" onclick="setTimerMode('relaxed')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-white text-indigo-700 shadow-sm">Relaxed</button>
+              <button id="timer-blitz" onclick="setTimerMode('blitz')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold text-slate-600 hover:text-slate-900">⏱️ Speed Blitz (60s • 1.5x)</button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="btn-pet-power" onclick="usePetQuizPower()" class="btn-3d bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-extrabold px-3.5 py-2 rounded-2xl flex items-center gap-1.5 disabled:opacity-40">
+              <span>🔮</span> <span id="btn-pet-power-label">Companion Hint</span>
+            </button>
+            <div class="text-xs font-extrabold text-slate-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl">
+              Mastered: <span id="ui-mastered-count" class="text-indigo-700">0</span>/50
+            </div>
+          </div>
+        </div>
+
+        <div id="blitz-bar-container" class="hidden bg-rose-50 border border-rose-200 rounded-2xl p-2.5 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="text-base">⏱️</span>
+            <span class="font-display font-bold text-rose-800 text-xs">Speed Blitz: <span id="blitz-time-text" class="text-base">60</span>s</span>
+          </div>
+          <div class="flex-1 max-w-xs h-2 bg-rose-200 rounded-full overflow-hidden">
+            <div id="blitz-progress" class="h-full bg-rose-600 w-full transition-all duration-300"></div>
+          </div>
+          <button onclick="startBlitzRound()" class="text-xs font-extrabold bg-rose-600 text-white px-3 py-1 rounded-xl">Restart</button>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div id="quiz-card" class="theme-surface rounded-3xl p-6 sm:p-8 border relative overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span id="q-badge" class="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-100 text-indigo-800">AVOIR Verb</span>
+            <span id="q-mode-tag" class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-600">Conjugate</span>
+          </div>
+          <span id="q-english" class="text-sm font-bold opacity-65 italic">"to do / to make"</span>
+        </div>
+
+        <div class="text-center my-6">
+          <p id="q-instruction" class="text-xs font-extrabold uppercase tracking-wider opacity-50 mb-2">Conjugate in Passé Composé</p>
+
+          <div class="inline-flex items-center gap-3 bg-indigo-50 border-2 border-indigo-200 px-6 py-2.5 rounded-3xl mb-3">
+            <span id="q-infinitive" class="font-display font-bold text-2xl sm:text-3xl text-indigo-900">FAIRE</span>
+          </div>
+
+          <div id="q-sentence-row" class="text-xl sm:text-2xl font-extrabold mt-2 flex flex-wrap items-center justify-center gap-2">
+            <span id="q-pronoun" class="text-rose-600 bg-rose-50 px-3 py-1 rounded-2xl border border-rose-200">Nous</span>
+            <span id="q-blank" class="border-b-4 border-dashed border-indigo-400 px-6 py-1 text-indigo-700 min-w-[140px]">?</span>
+            <span id="q-context" class="opacity-75 font-bold text-lg sm:text-xl">un gâteau.</span>
+          </div>
+          <p id="q-gender-note" class="text-xs font-extrabold text-fuchsia-600 mt-2 hidden"></p>
+        </div>
+
+        <div id="q-hint-box" class="hidden max-w-xl mx-auto mb-4 bg-purple-50 border border-purple-200 rounded-2xl p-3 text-center text-sm font-bold text-purple-900"></div>
+
+        <div id="mc-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto mt-6"></div>
+
+        <div id="type-container" class="hidden max-w-xl mx-auto mt-6 space-y-3">
+          <div class="flex gap-2">
+            <input id="type-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+              placeholder="Type auxiliary + past participle (e.g. avons fait)..."
+              onkeydown="if(event.key==='Enter') { if(questionAnswered) nextQuestion(); else submitTypedAnswer(); }"
+              class="w-full px-4 py-3 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none text-base font-bold text-slate-800 bg-slate-50" />
+            <button onclick="submitTypedAnswer()" class="btn-3d bg-indigo-600 hover:bg-indigo-500 text-white font-display font-bold px-6 py-3 rounded-2xl text-base">Check</button>
+          </div>
+          <div class="flex items-center justify-center gap-1.5 flex-wrap text-slate-700">
+            <span class="text-xs font-bold opacity-60 mr-1">Accents:</span>
+            <button type="button" onclick="insertAccent('é')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">é</button>
+            <button type="button" onclick="insertAccent('è')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">è</button>
+            <button type="button" onclick="insertAccent('ê')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">ê</button>
+            <button type="button" onclick="insertAccent('à')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">à</button>
+            <button type="button" onclick="insertAccent('ç')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">ç</button>
+            <button type="button" onclick="insertAccent('û')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">û</button>
+            <button type="button" onclick="insertAccent('î')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">î</button>
+            <button type="button" onclick="insertAccent('ô')" class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-100 rounded-lg font-bold text-sm">ô</button>
+          </div>
+        </div>
+
+        <div id="q-feedback" class="hidden max-w-2xl mx-auto mt-6 rounded-2xl p-4 border-2 transition-all">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+              <h4 id="fb-title" class="font-display font-bold text-lg"></h4>
+              <p id="fb-explanation" class="text-sm font-semibold mt-0.5"></p>
+            </div>
+            <button id="btn-next-q" onclick="nextQuestion()" class="btn-3d bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-5 py-2.5 rounded-2xl whitespace-nowrap">Next Question ➔</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 2: MY PETS & COIN VAULTS ==================== -->
+    <div id="view-pets" class="tab-view hidden space-y-5">
+      <div class="theme-surface rounded-3xl p-5 border flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="font-display font-bold text-2xl">🐾 My Pets &amp; Coin Vaults</h2>
+          <p class="text-xs sm:text-sm font-bold opacity-65">Equip up to 3 companions! Answer quiz questions to surge their vaults, awaken stars via duplicates, and inspect 3-stage evolutions.</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <span class="text-xs font-extrabold bg-rose-50 text-rose-800 border border-rose-200 px-3 py-2 rounded-xl">🥐 Treats: <span id="studio-treats-badge">4</span></span>
+          <button id="btn-claim-all-pets" onclick="claimAllVaults()" class="btn-3d bg-amber-400 hover:bg-amber-300 disabled:bg-slate-200 disabled:text-slate-400 text-indigo-950 font-display font-bold text-xs px-4 py-2.5 rounded-2xl flex items-center gap-1.5">
+            <span>💰 Collect All Vaults</span> <span id="ui-total-vault-pets" class="bg-white/90 px-2 py-0.5 rounded-lg">🪙 0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Equipped Squad Vaults -->
+      <div class="theme-surface rounded-3xl p-4 border">
+        <div class="text-xs font-extrabold uppercase tracking-wider opacity-65 mb-3">⭐ Active Equipped Squad (<span id="ui-equipped-count">1</span>/3 Slots)</div>
+        <div id="pets-active-summary" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+      </div>
+
+      <!-- Full Pet Roster -->
+      <div id="pets-collection-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- ==================== VIEW 3: ARCANE HOLOGRAPHIC CARD PULLS ==================== -->
+    <div id="view-gacha" class="tab-view hidden space-y-6">
+      <div class="theme-hero rounded-3xl p-6 sm:p-8 text-white shadow-2xl border border-white/15 relative overflow-hidden">
+        <!-- Ambient Radial Glow -->
+        <div class="absolute -top-24 -left-24 w-80 h-80 bg-amber-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-fuchsia-500/25 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          <!-- Left: Arcane Card Pack Summoning Altar -->
+          <div class="lg:col-span-7 flex flex-col items-center text-center">
+            <!-- Pity Progress Bar -->
+            <div class="w-full max-w-xs mb-3 bg-white/10 border border-white/20 rounded-2xl p-2.5">
+              <div class="flex items-center justify-between text-[11px] font-extrabold text-amber-300 mb-1">
+                <span>✨ Epic+ Pity Guarantee</span>
+                <span id="ui-pity-counter" class="bg-amber-400 text-indigo-950 px-2 py-0.5 rounded-full font-black">10 left</span>
+              </div>
+              <div class="w-full h-2 bg-black/30 rounded-full overflow-hidden">
+                <div id="ui-pity-bar" class="h-full bg-gradient-to-r from-amber-300 via-fuchsia-400 to-rose-400 transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <h2 class="font-display font-bold text-3xl sm:text-4xl mb-1 text-white drop-shadow">🃏 Les Cartes Arcanes</h2>
+            <p class="text-indigo-200 text-xs sm:text-sm font-semibold max-w-md mb-6">
+              Tear open radiant holographic booster packs! Duplicate pulls awaken ★ Star Ranks (+10% stats per star) &amp; grant +60 XP.
+            </p>
+
+            <!-- Sealed Booster Pack Visual -->
+            <div id="sealed-pack-stage" onclick="pullCardPack(1)" class="cursor-pointer group relative w-52 h-68 sm:w-56 sm:h-76 rounded-3xl bg-gradient-to-br from-amber-300 via-rose-500 to-indigo-700 p-1.5 shadow-2xl animate-pack-idle hover:scale-105 transition-transform">
+              <div class="w-full h-full rounded-[20px] bg-gradient-to-b from-indigo-950 via-purple-950 to-slate-950 flex flex-col items-center justify-between p-4 relative overflow-hidden border border-amber-300/60">
+                <!-- Foil Shimmer -->
+                <div class="absolute inset-0 holo-foil"></div>
+                <!-- Diagonal Rip Seam Flare (Triggers on Pull) -->
+                <div id="pack-tear-seam" class="hidden absolute top-1/3 -left-8 h-2 bg-white shadow-[0_0_24px_#fde047,0_0_45px_#ffffff] -rotate-12 z-30"></div>
+                <!-- Rotating Light Rays -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-25 pointer-events-none">
+                  <div class="w-72 h-72 animate-rays" style="background: repeating-conic-gradient(from 0deg, #fbbf24 0deg 12deg, transparent 12deg 24deg); border-radius: 50%;"></div>
+                </div>
+
+                <div class="relative z-10 text-[10px] font-black tracking-widest uppercase text-amber-300 bg-white/10 px-3 py-0.5 rounded-full border border-amber-300/40">
+                  Édition Royale • Holo
+                </div>
+
+                <!-- Intricate Crest SVG -->
+                <div class="relative z-10 my-auto flex flex-col items-center">
+                  <svg width="96" height="96" viewBox="0 0 100 100" class="drop-shadow-lg group-hover:scale-110 transition-transform">
+                    <defs>
+                      <linearGradient id="packCrestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fde047"/>
+                        <stop offset="50%" stop-color="#f59e0b"/>
+                        <stop offset="100%" stop-color="#f43f5e"/>
+                      </linearGradient>
+                    </defs>
+                    <polygon points="50,4 63,32 95,36 71,58 78,90 50,74 22,90 29,58 5,36 37,32" fill="url(#packCrestGrad)" stroke="#ffffff" stroke-width="2.5"/>
+                    <circle cx="50" cy="50" r="20" fill="#1e1b4b" stroke="#fde047" stroke-width="2.5"/>
+                    <circle cx="50" cy="50" r="15" fill="none" stroke="#f43f5e" stroke-width="1" stroke-dasharray="3 2"/>
+                    <text x="50" y="56" text-anchor="middle" fill="#fde047" font-family="Fredoka" font-weight="bold" font-size="18">FR</text>
+                  </svg>
+                  <span class="font-display font-bold text-base text-white mt-2 tracking-wide">Booster Mystère</span>
+                </div>
+
+                <div class="relative z-10 text-[11px] font-extrabold text-amber-200/95 bg-black/30 px-3 py-1 rounded-full">
+                  Tap Pack to Tear Open ✨
+                </div>
+              </div>
+            </div>
+
+            <!-- Pull Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-3 mt-7">
+              <button id="btn-pull-1" onclick="pullCardPack(1)" class="btn-3d bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-500 text-indigo-950 font-display font-bold px-6 py-3 rounded-2xl text-base flex items-center gap-2 shadow-xl">
+                <span>🃏 Unseal 1 Pack</span>
+                <span class="bg-black/15 px-2.5 py-0.5 rounded-xl text-xs font-black">🪙 100</span>
+              </button>
+              <button id="btn-pull-10" onclick="pullCardPack(10)" class="btn-3d bg-gradient-to-r from-fuchsia-500 via-purple-500 to-indigo-500 text-white font-display font-bold px-6 py-3 rounded-2xl text-base flex items-center gap-2 shadow-xl border border-white/30">
+                <span>🌟 Mega 10-Pack (10% Off)</span>
+                <span class="bg-black/25 px-2.5 py-0.5 rounded-xl text-xs font-black">🪙 900</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Transparent Odds Table -->
+          <div class="lg:col-span-5 bg-white/10 backdrop-blur-md border border-white/15 rounded-3xl p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-display font-bold text-base text-amber-300">📊 Exact Card Drop Rates</h3>
+              <span class="text-[10px] font-extrabold bg-white/15 px-2.5 py-1 rounded-full">16 Summonable Pets</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 text-xs font-extrabold">
+              <div class="bg-slate-900/70 border border-slate-500 px-2.5 py-1.5 rounded-xl flex justify-between"><span>Common</span><span class="text-slate-300">50%</span></div>
+              <div class="bg-sky-950/70 border border-sky-400 px-2.5 py-1.5 rounded-xl flex justify-between"><span>Rare</span><span class="text-sky-300">30%</span></div>
+              <div class="bg-purple-950/70 border border-purple-400 px-2.5 py-1.5 rounded-xl flex justify-between"><span>Epic</span><span class="text-purple-300">15%</span></div>
+              <div class="bg-amber-900/70 border border-amber-300 px-2.5 py-1.5 rounded-xl flex justify-between"><span>Legendary</span><span class="text-amber-200">5%</span></div>
+            </div>
+            <div id="gacha-odds-table" class="space-y-1.5 max-h-[270px] overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Card Pull Reveal Stage -->
+      <div id="card-pull-stage" class="hidden theme-surface rounded-3xl p-6 border-2 border-amber-400/60 space-y-5 animate-pop">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="font-display font-bold text-xl">✨ Tap Cards to Flip &amp; Reveal!</h3>
+            <p class="text-xs font-bold opacity-65">Move cursor over cards for 3D holographic tilt • Click each card or use Reveal All</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-flip-all" onclick="flipAllPulledCards()" class="btn-3d bg-gradient-to-r from-amber-400 to-orange-500 text-indigo-950 font-display font-bold text-xs px-4 py-2 rounded-xl shadow">
+              ⚡ Reveal All Cards
+            </button>
+            <button onclick="closeCardPullStage()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+              Done
+            </button>
+          </div>
+        </div>
+
+        <div id="pulled-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4"></div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 4: ZOO & HYBRID BREEDING LAB ==================== -->
+    <div id="view-zoo" class="tab-view hidden space-y-6">
+      <div class="space-y-3">
+        <!-- Paid Habitats Bar -->
+        <div class="theme-surface rounded-3xl p-4 border flex flex-wrap items-center justify-between gap-3">
+          <div id="zoo-habitat-buttons" class="flex items-center gap-1.5 flex-wrap"></div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="throwZooToy()" class="btn-3d bg-amber-400 hover:bg-amber-300 text-indigo-950 font-display font-bold text-xs px-3.5 py-2 rounded-xl">🧶 Toy Ball</button>
+            <button id="btn-dance-party" onclick="triggerZooDanceParty()" class="btn-3d bg-fuchsia-600 hover:bg-fuchsia-500 disabled:bg-slate-400 text-white font-display font-bold text-xs px-3.5 py-2 rounded-xl">💃 Dance Party</button>
+          </div>
+        </div>
+
+        <!-- Active Habitat Bonus Banner -->
+        <div id="zoo-habitat-status" class="theme-surface rounded-2xl px-4 py-2.5 border flex flex-wrap items-center justify-between gap-2 text-xs font-extrabold"></div>
+
+        <!-- Zoo Enclosure Stage -->
+        <div id="zoo-enclosure" class="relative w-full h-[360px] sm:h-[410px] rounded-3xl border-4 border-amber-300 shadow-inner overflow-hidden transition-all duration-500">
+          <div id="zoo-scenery" class="absolute inset-0 pointer-events-none"></div>
+          <div id="zoo-toy" class="hidden absolute text-3xl transition-all duration-500 pointer-events-none z-20">🧶</div>
+          <div id="zoo-pets-layer" class="absolute inset-0 z-10"></div>
+          <!-- Locked Habitat Overlay -->
+          <div id="zoo-locked-overlay" class="hidden absolute inset-0 z-30 bg-slate-950/65 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center text-white">
+            <div class="text-4xl mb-2">🔒</div>
+            <h3 id="zoo-locked-title" class="font-display font-bold text-2xl text-amber-300">Locked Habitat</h3>
+            <p id="zoo-locked-bonus" class="text-xs sm:text-sm font-semibold text-indigo-100 mt-1 max-w-md"></p>
+            <button id="zoo-unlock-btn" onclick="unlockSelectedHabitat()" class="btn-3d mt-4 bg-gradient-to-r from-amber-400 to-orange-500 text-indigo-950 font-display font-bold px-6 py-3 rounded-2xl text-sm shadow-xl">
+              Unlock Habitat
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet Codex -->
+      <div class="theme-surface rounded-3xl p-5 border">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-display font-bold text-base">📘 Pet Codex (<span id="codex-progress">0/18</span> Species Discovered)</h3>
+          <span class="text-xs font-bold text-indigo-600">Click any species to inspect its 3-stage evolution tree!</span>
+        </div>
+        <div id="codex-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5"></div>
+      </div>
+
+      <!-- Breeding Lab -->
+      <div class="space-y-4 pt-2">
+        <div class="bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 rounded-3xl p-5 text-white shadow-lg">
+          <h2 class="font-display font-bold text-2xl mb-1">🧬 Laboratoire de Fusion &amp; Élevage</h2>
+          <p class="text-xs sm:text-sm text-pink-100 font-semibold">Fuse two Level 3+ companions to hatch exclusive Mythic Hybrid species!</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+          <div class="theme-surface rounded-3xl p-5 border-2 border-pink-200 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-extrabold uppercase text-pink-600 bg-pink-50 px-2.5 py-1 rounded-lg">Parent 1 (Lv. 3+)</span>
+              <select id="breed-parent-a" onchange="renderBreedingPreview()" class="mt-2 w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-bold text-sm text-slate-800"></select>
+            </div>
+            <div id="breed-preview-a" class="my-4 flex flex-col items-center justify-center min-h-[130px]"></div>
+          </div>
+
+          <div class="bg-gradient-to-b from-purple-50 to-pink-50 rounded-3xl p-5 shadow-md border-2 border-purple-200 flex flex-col items-center justify-between text-center text-slate-800">
+            <div class="text-xs font-extrabold uppercase tracking-wider text-purple-700">Hybrid Incubator</div>
+            <div class="my-3 flex flex-col items-center">
+              <div id="incubator-egg" onclick="tapIncubatorEgg()" class="cursor-pointer transition transform hover:scale-105 text-7xl select-none">🥚</div>
+              <p id="incubator-hint" class="text-xs font-extrabold text-purple-800 mt-2">Select two Level 3+ pets to fuse!</p>
+              <div id="incubator-bar-wrap" class="hidden w-48 h-3 bg-purple-200 rounded-full overflow-hidden mt-2">
+                <div id="incubator-bar" class="h-full bg-gradient-to-r from-pink-500 to-purple-600 w-0 transition-all"></div>
+              </div>
+            </div>
+            <button id="btn-start-breed" onclick="startBreeding()" class="btn-3d w-full bg-gradient-to-r from-pink-500 to-purple-600 disabled:opacity-50 text-white font-display font-bold py-3 px-4 rounded-2xl text-sm shadow">✨ Fuse Pets (🪙 550)</button>
+          </div>
+
+          <div class="theme-surface rounded-3xl p-5 border-2 border-purple-200 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-extrabold uppercase text-purple-600 bg-purple-50 px-2.5 py-1 rounded-lg">Parent 2 (Lv. 3+)</span>
+              <select id="breed-parent-b" onchange="renderBreedingPreview()" class="mt-2 w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-bold text-sm text-slate-800"></select>
+            </div>
+            <div id="breed-preview-b" class="my-4 flex flex-col items-center justify-center min-h-[130px]"></div>
+          </div>
+        </div>
+
+        <div class="theme-surface rounded-3xl p-5 border">
+          <h3 class="font-display font-bold text-base mb-3">📜 Secret Hybrid Fusion Recipes</h3>
+          <div id="breed-recipes-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 5: THEME-ONLY BOUTIQUE ==================== -->
+    <div id="view-shop" class="tab-view hidden space-y-6">
+      <div class="theme-hero rounded-3xl p-6 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <h2 class="font-display font-bold text-2xl sm:text-3xl text-amber-300">🎨 La Boutique des Thèmes &amp; Pâtisseries</h2>
+          <p class="text-xs sm:text-sm font-semibold text-indigo-100 mt-1">
+            Customize your Academy with luxury visual themes &amp; Croissant treats!
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <button onclick="buyTreatPack(3, 90)" class="btn-3d bg-white text-rose-700 font-display font-bold text-xs px-4 py-2.5 rounded-2xl shadow">🥐 3 Croissants (🪙 90)</button>
+          <button onclick="buyTreatPack(10, 260)" class="btn-3d bg-amber-300 text-indigo-950 font-display font-bold text-xs px-4 py-2.5 rounded-2xl shadow">🧺 10 Croissants (🪙 260)</button>
+        </div>
+      </div>
+
+      <!-- 6 Unlockable Visual Themes Grid -->
+      <div id="themes-shop-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+
+  </main>
+
+  <!-- ==================== PET INSPECTOR & EVOLUTION MODAL ==================== -->
+  <div id="modal-inspect" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3">
+    <div class="bg-white text-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-pop space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="font-display font-bold text-lg text-indigo-950">🔍 Companion Dossier &amp; Evolution Tree</h3>
+        <button onclick="closeInspectModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 font-bold">✕</button>
+      </div>
+      <div id="inspect-modal-body" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CUSTOMIZATION MODAL ==================== -->
+  <div id="modal-customize" class="fixed inset-0 z-50 hidden bg-slate-900/65 backdrop-blur-sm flex items-center justify-center p-3">
+    <div class="bg-white text-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-pop space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-display font-bold text-lg text-indigo-950">🎨 Customize Companion</h3>
+        <button onclick="closeCustomizeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 font-bold">✕</button>
+      </div>
+      <div id="customize-modal-body" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- ==================== STUDY GUIDE MODAL (50 VERBS ONLY) ==================== -->
+  <div id="modal-cheatsheet" class="fixed inset-0 z-50 hidden bg-slate-900/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-white text-slate-800 rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-pop">
+      <div class="p-4 sm:p-5 bg-indigo-950 text-white flex items-center justify-between">
+        <div>
+          <h2 class="font-display font-bold text-lg sm:text-xl text-amber-300">📖 50-Verb Passé Composé Study Guide</h2>
+          <p class="text-xs text-indigo-200 font-semibold">Auxiliary (Avoir/Être) + Past Participle • Agreement rules with Être</p>
+        </div>
+        <button onclick="closeCheatSheet()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 font-bold flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm">
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-3.5">
+          <h3 class="font-display font-bold text-rose-800 mb-1">🏠 ÊTRE Verbs in Your 50-Verb List (Require Gender/Number Agreement)</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 font-bold text-[11px]">
+            <div><b>ALLER</b> → allé(e)(s)</div>
+            <div><b>PARTIR</b> → parti(e)(s)</div>
+            <div><b>SORTIR</b> → sorti(e)(s)</div>
+            <div><b>VENIR</b> → venu(e)(s)</div>
+            <div><b>MOURIR</b> → mort(e)(s)</div>
+            <div><b>DEVENIR</b> → devenu(e)(s)</div>
+            <div><b>S’ASSEOIR</b> → assis(e)(s)</div>
+            <div><b>SE TAIRE*</b> → tu(e)(s)</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <h3 class="font-display font-bold text-base text-indigo-950">Search All 50 Verbs</h3>
+            <input id="cheatsheet-search" type="text" oninput="filterCheatSheet()" placeholder="Search verb, past participle, English..."
+              class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold focus:outline-none focus:border-indigo-500 w-full sm:w-60" />
+          </div>
+          <div id="cheatsheet-verb-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-xs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Stack -->
+  <div id="toast-box" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+<script>
+/* ============================================================================
+   0. UTILITIES & HTML SANITIZATION
+   ============================================================================ */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* ============================================================================
+   1. WEB AUDIO SYNTHESIZER (ANTICIPATION RISERS & RARITY CARD FANFARES)
+   ============================================================================ */
+let soundEnabled = true;
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) audioCtx = new AudioContext();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTone(freq, type = 'sine', duration = 0.12, delay = 0, vol = 0.12) {
+  if (!soundEnabled) return;
+  try {
+    initAudio();
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(audioCtx.currentTime + delay);
+    osc.stop(audioCtx.currentTime + delay + duration);
+  } catch (e) {}
+}
+
+const SFX = {
+  correct: () => {
+    playTone(523.25, 'triangle', 0.12, 0, 0.15);
+    playTone(659.25, 'triangle', 0.12, 0.06, 0.15);
+    playTone(783.99, 'triangle', 0.2, 0.12, 0.16);
+  },
+  wrong: () => {
+    playTone(200, 'sawtooth', 0.16, 0, 0.1);
+    playTone(160, 'sawtooth', 0.2, 0.1, 0.1);
+  },
+  claim: () => {
+    playTone(880, 'sine', 0.08, 0, 0.12);
+    playTone(1174.66, 'sine', 0.1, 0.05, 0.12);
+    playTone(1567.98, 'triangle', 0.2, 0.1, 0.14);
+  },
+  petChirp: () => {
+    playTone(700, 'sine', 0.08, 0, 0.1);
+    playTone(950, 'sine', 0.12, 0.05, 0.1);
+  },
+  packRip: () => {
+    [220, 277, 330, 415, 523, 659, 830, 1046].forEach((f, i) => {
+      playTone(f, 'sawtooth', 0.15, i * 0.075, 0.11);
+    });
+  },
+  cardFlip: (rarity) => {
+    if (rarity === 'Legendary') {
+      [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98, 2093].forEach((f, i) => playTone(f, 'triangle', 0.28, i * 0.055, 0.17));
+    } else if (rarity === 'Epic') {
+      [440, 554.37, 659.25, 880, 1108.73].forEach((f, i) => playTone(f, 'triangle', 0.2, i * 0.055, 0.14));
+    } else if (rarity === 'Rare') {
+      [523.25, 659.25, 987.77].forEach((f, i) => playTone(f, 'sine', 0.15, i * 0.06, 0.13));
+    } else {
+      playTone(587.33, 'sine', 0.1, 0, 0.12);
+      playTone(880, 'sine', 0.14, 0.06, 0.12);
+    }
+  },
+  evolve: () => {
+    [392, 493.88, 587.33, 783.99, 987.77, 1174.66].forEach((f, i) => {
+      playTone(f, 'triangle', 0.18, i * 0.07, 0.15);
+    });
+  },
+  pop: () => playTone(600, 'sine', 0.06, 0, 0.08)
+};
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('btn-sound').textContent = soundEnabled ? '🔊' : '🔇';
+  if (soundEnabled) SFX.pop();
+}
+
+/* ============================================================================
+   2. PARTICLES, LIGHT FLARES, SCREEN SHAKE & FLOATING TEXT
+   ============================================================================ */
+const fxCanvas = document.getElementById('fx-canvas');
+const fxCtx = fxCanvas.getContext('2d');
+let particles = [];
+
+function resizeFxCanvas() {
+  fxCanvas.width = window.innerWidth;
+  fxCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeFxCanvas);
+resizeFxCanvas();
+
+function spawnConfetti(x = window.innerWidth / 2, y = window.innerHeight / 2, count = 40, customColors = null) {
+  const colors = customColors || ['#f43f5e', '#fbbf24', '#34d399', '#38bdf8', '#c084fc'];
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 3 + Math.random() * 8;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 3.2,
+      size: 5 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 360,
+      vRot: (Math.random() - 0.5) * 14,
+      life: 1
+    });
+  }
+}
+
+function triggerLightFlare() {
+  const flare = document.getElementById('light-flare-overlay');
+  flare.classList.remove('hidden', 'animate-screen-flash');
+  void flare.offsetWidth;
+  flare.classList.add('animate-screen-flash');
+  setTimeout(() => flare.classList.add('hidden'), 700);
+}
+
+function triggerScreenShake() {
+  const body = document.getElementById('app-body');
+  body.classList.remove('animate-screen-shake');
+  void body.offsetWidth;
+  body.classList.add('animate-screen-shake');
+  setTimeout(() => body.classList.remove('animate-screen-shake'), 460);
+}
+
+function animateParticles() {
+  fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.22;
+    p.rot += p.vRot;
+    p.life -= 0.02;
+    if (p.life <= 0) { particles.splice(i, 1); continue; }
+    fxCtx.save();
+    fxCtx.translate(p.x, p.y);
+    fxCtx.rotate((p.rot * Math.PI) / 180);
+    fxCtx.globalAlpha = p.life;
+    fxCtx.fillStyle = p.color;
+    fxCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+    fxCtx.restore();
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+function spawnFloatingText(text, x, y, color = '#d97706') {
+  const el = document.createElement('div');
+  el.className = 'floating-text text-sm sm:text-base';
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  el.style.color = color;
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function showToast(msg, bgClass = 'bg-indigo-700') {
+  const box = document.getElementById('toast-box');
+  const t = document.createElement('div');
+  t.className = `${bgClass} text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-2xl shadow-lg animate-pop`;
+  t.textContent = msg;
+  box.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transition = 'opacity 0.3s';
+    setTimeout(() => t.remove(), 300);
+  }, 2400);
+}
+
+/* ============================================================================
+   3. STRICT 50-VERB PASSÉ COMPOSÉ DATABASE (ONLY THE 50 REQUESTED VERBS)
+   ============================================================================ */
+const VERB_DB = [
+  { inf: "ÊTRE", en: "to be", aux: "avoir", pp: "été", cat: "starred", ctx: "très courageux.", wrongPPs: ["étu", "être", "étai"] },
+  { inf: "ALLER", en: "to go", aux: "être", pp: "allé", cat: "vandertramp", ctx: "à Paris hier.", wrongPPs: ["allu", "alli", "allait"] },
+  { inf: "AVOIR", en: "to have", aux: "avoir", pp: "eu", cat: "starred", ctx: "une bonne idée.", wrongPPs: ["avu", "eut", "avoir"] },
+  { inf: "DEVOIR", en: "to have to / must", aux: "avoir", pp: "dû", cat: "starred", ctx: "finir le projet.", wrongPPs: ["devu", "devoir", "duis"] },
+  { inf: "DIRE", en: "to say / tell", aux: "avoir", pp: "dit", cat: "starred", ctx: "la vérité.", wrongPPs: ["dis", "diré", "ditu"] },
+  { inf: "ÉCRIRE", en: "to write", aux: "avoir", pp: "écrit", cat: "starred", ctx: "une longue lettre.", wrongPPs: ["écriv", "écrivu", "écriré"] },
+  { inf: "DORMIR", en: "to sleep", aux: "avoir", pp: "dormi", cat: "regular", ctx: "pendant huit heures.", wrongPPs: ["dormu", "dormit", "dormé"] },
+  { inf: "FAIRE", en: "to do / make", aux: "avoir", pp: "fait", cat: "starred", ctx: "un gâteau au chocolat.", wrongPPs: ["fais", "faitu", "fairé"] },
+  { inf: "POUVOIR", en: "to can / be able", aux: "avoir", pp: "pu", cat: "starred", ctx: "réussir l'examen.", wrongPPs: ["pouvu", "peu", "puis"] },
+  { inf: "PRENDRE", en: "to take", aux: "avoir", pp: "pris", cat: "starred", ctx: "le train de midi.", wrongPPs: ["prendu", "prit", "prenu"] },
+  { inf: "VOULOIR", en: "to want", aux: "avoir", pp: "voulu", cat: "starred", ctx: "visiter le Louvre.", wrongPPs: ["vouloi", "voulit", "veulu"] },
+  { inf: "METTRE", en: "to put / wear", aux: "avoir", pp: "mis", cat: "starred", ctx: "un manteau chaud.", wrongPPs: ["mettu", "mit", "metté"] },
+  { inf: "PARTIR", en: "to leave", aux: "être", pp: "parti", cat: "vandertramp", ctx: "tôt ce matin.", wrongPPs: ["partu", "partit", "parté"] },
+  { inf: "RIRE", en: "to laugh", aux: "avoir", pp: "ri", cat: "starred", ctx: "aux éclats.", wrongPPs: ["ris", "riu", "riré"] },
+  { inf: "OUVRIR", en: "to open", aux: "avoir", pp: "ouvert", cat: "starred", ctx: "la fenêtre.", wrongPPs: ["ouvri", "ouvru", "ouvré"] },
+  { inf: "SORTIR", en: "to go out", aux: "être", pp: "sorti", cat: "vandertramp", ctx: "avec des amis.", wrongPPs: ["sortu", "sortit", "sorté"] },
+  { inf: "SAVOIR", en: "to know (fact)", aux: "avoir", pp: "su", cat: "starred", ctx: "la réponse exacte.", wrongPPs: ["savu", "saché", "sut"] },
+  { inf: "CROIRE", en: "to believe", aux: "avoir", pp: "cru", cat: "starred", ctx: "cette histoire.", wrongPPs: ["croi", "croyu", "crut"] },
+  { inf: "VOIR", en: "to see", aux: "avoir", pp: "vu", cat: "starred", ctx: "la Tour Eiffel.", wrongPPs: ["voi", "voyu", "vut"] },
+  { inf: "PLEUVOIR", en: "to rain", aux: "avoir", pp: "plu", cat: "starred", impersonal: true, ctx: "toute la journée.", wrongPPs: ["pleuvu", "plut", "pleuvé"] },
+  { inf: "LIRE", en: "to read", aux: "avoir", pp: "lu", cat: "starred", ctx: "un roman captivant.", wrongPPs: ["li", "lisu", "lut"] },
+  { inf: "ACHETER", en: "to buy", aux: "avoir", pp: "acheté", cat: "regular", ctx: "des croissants frais.", wrongPPs: ["achété", "achetu", "acheti"] },
+  { inf: "APPELER", en: "to call", aux: "avoir", pp: "appelé", cat: "regular", ctx: "le professeur.", wrongPPs: ["appellé", "appelu", "appeli"] },
+  { inf: "ESPÉRER", en: "to hope", aux: "avoir", pp: "espéré", cat: "regular", ctx: "gagner le match.", wrongPPs: ["espèré", "espéru", "espéri"] },
+  { inf: "MANGER", en: "to eat", aux: "avoir", pp: "mangé", cat: "regular", ctx: "une crêpe sucrée.", wrongPPs: ["mangeé", "mangu", "mangi"] },
+  { inf: "COMMENCER", en: "to start", aux: "avoir", pp: "commencé", cat: "regular", ctx: "la leçon de français.", wrongPPs: ["commençé", "commencu", "commenci"] },
+  { inf: "RECEVOIR", en: "to receive", aux: "avoir", pp: "reçu", cat: "starred", ctx: "un beau cadeau.", wrongPPs: ["recu", "recevu", "reçut"] },
+  { inf: "CONNAÎTRE", en: "to know", aux: "avoir", pp: "connu", cat: "starred", ctx: "ce quartier.", wrongPPs: ["connaîtu", "connut", "connaissé"] },
+  { inf: "COURIR", en: "to run", aux: "avoir", pp: "couru", cat: "starred", ctx: "dans le parc.", wrongPPs: ["couri", "courit", "couré"] },
+  { inf: "SUIVRE", en: "to follow", aux: "avoir", pp: "suivi", cat: "starred", ctx: "le guide touristique.", wrongPPs: ["suivu", "suivit", "suivé"] },
+  { inf: "CONDUIRE", en: "to drive", aux: "avoir", pp: "conduit", cat: "starred", ctx: "jusqu'à Lyon.", wrongPPs: ["conduis", "conduitu", "conduiré"] },
+  { inf: "VENIR", en: "to come", aux: "être", pp: "venu", cat: "vandertramp", ctx: "à la fête.", wrongPPs: ["veni", "venit", "venant"] },
+  { inf: "BOIRE", en: "to drink", aux: "avoir", pp: "bu", cat: "starred", ctx: "un chocolat chaud.", wrongPPs: ["boivu", "but", "boiré"] },
+  { inf: "VIVRE", en: "to live", aux: "avoir", pp: "vécu", cat: "starred", ctx: "en France pendant deux ans.", wrongPPs: ["vivu", "vécit", "vivé"] },
+  { inf: "SERVIR", en: "to serve", aux: "avoir", pp: "servi", cat: "regular", ctx: "le dîner.", wrongPPs: ["servu", "servit", "servé"] },
+  { inf: "S’ASSEOIR", en: "to sit down", aux: "être", pp: "assis", cat: "reflexive", reflexive: true, ctx: "au premier rang.", wrongPPs: ["asseoyé", "assit", "asseoir"] },
+  { inf: "EMPLOYER", en: "to use", aux: "avoir", pp: "employé", cat: "regular", ctx: "le bon mot.", wrongPPs: ["emploié", "employu", "employi"] },
+  { inf: "ENVOYER", en: "to send", aux: "avoir", pp: "envoyé", cat: "regular", ctx: "une carte postale.", wrongPPs: ["envoié", "envoyu", "envoyi"] },
+  { inf: "PLAIRE", en: "to please", aux: "avoir", pp: "plu", cat: "starred", ctx: "au public.", wrongPPs: ["plaisu", "plut", "plairé"] },
+  { inf: "MOURIR", en: "to die", aux: "être", pp: "mort", cat: "vandertramp", ctx: "de rire !", wrongPPs: ["mouri", "mouru", "mourit"] },
+  { inf: "VALOIR", en: "to be worth", aux: "avoir", pp: "valu", cat: "starred", ctx: "la peine.", wrongPPs: ["valoi", "valut", "vaulu"] },
+  { inf: "FALLOIR", en: "to be necessary", aux: "avoir", pp: "fallu", cat: "starred", impersonal: true, ctx: "étudier beaucoup.", wrongPPs: ["falloi", "fallut", "faulu"] },
+  { inf: "CRAINDRE*", en: "to fear", aux: "avoir", pp: "craint", cat: "starred", ctx: "le mauvais temps.", wrongPPs: ["craindu", "crains", "crainu"] },
+  { inf: "RÉSOUDRE*", en: "to solve", aux: "avoir", pp: "résolu", cat: "starred", ctx: "l'énigme difficile.", wrongPPs: ["résoud", "résoudi", "résolut"] },
+  { inf: "PEINDRE", en: "to paint", aux: "avoir", pp: "peint", cat: "starred", ctx: "un paysage magnifique.", wrongPPs: ["peindu", "peins", "peinu"] },
+  { inf: "CUIRE", en: "to cook", aux: "avoir", pp: "cuit", cat: "starred", ctx: "le pain au four.", wrongPPs: ["cuis", "cuitu", "cuiré"] },
+  { inf: "SE TAIRE*", en: "to be quiet", aux: "être", pp: "tu", cat: "reflexive", reflexive: true, ctx: "pendant le film.", wrongPPs: ["taisu", "tut", "tairé"] },
+  { inf: "CUEILLIR*", en: "to pick", aux: "avoir", pp: "cueilli", cat: "starred", ctx: "des fleurs fraîches.", wrongPPs: ["cueillu", "cueillert", "cueillé"] },
+  { inf: "DEVENIR", en: "to become", aux: "être", pp: "devenu", cat: "vandertramp", ctx: "un maître du français.", wrongPPs: ["deveni", "devenit", "devenant"] },
+  { inf: "COMPRENDRE", en: "to understand", aux: "avoir", pp: "compris", cat: "starred", ctx: "toute la règle.", wrongPPs: ["comprendu", "comprit", "comprenu"] }
+];
+
+const SUBJECTS = [
+  { key: "je", label: "Je", fem: false, plur: false, avoir: "ai", etre: "suis", refl: "me suis" },
+  { key: "tu", label: "Tu", fem: false, plur: false, avoir: "as", etre: "es", refl: "t'es" },
+  { key: "il", label: "Il", fem: false, plur: false, avoir: "a", etre: "est", refl: "s'est" },
+  { key: "elle", label: "Elle", fem: true, plur: false, avoir: "a", etre: "est", refl: "s'est" },
+  { key: "on", label: "On", fem: false, plur: false, avoir: "a", etre: "est", refl: "s'est" },
+  { key: "nous", label: "Nous", fem: false, plur: true, avoir: "avons", etre: "sommes", refl: "nous sommes" },
+  { key: "nous_f", label: "Nous (fém.)", fem: true, plur: true, avoir: "avons", etre: "sommes", refl: "nous sommes" },
+  { key: "vous", label: "Vous", fem: false, plur: true, avoir: "avez", etre: "êtes", refl: "vous êtes" },
+  { key: "ils", label: "Ils", fem: false, plur: true, avoir: "ont", etre: "sont", refl: "se sont" },
+  { key: "elles", label: "Elles", fem: true, plur: true, avoir: "ont", etre: "sont", refl: "se sont" }
+];
+
+function applyAgreement(pp, subj) {
+  let res = pp;
+  if (subj.fem && !res.endsWith('e')) res += 'e';
+  if (subj.plur && !res.endsWith('s')) res += 's';
+  return res;
+}
+
+function buildConjugation(verb, subj) {
+  if (verb.impersonal) {
+    return { pronounDisplay: "Il", answer: `a ${verb.pp}`, explanation: `${verb.inf} uses impersonal "Il" + avoir → Il a ${verb.pp}.` };
+  }
+  if (verb.reflexive) {
+    const agreedPP = applyAgreement(verb.pp, subj);
+    return { pronounDisplay: subj.label, answer: `${subj.refl} ${agreedPP}`, explanation: `Reflexive verb uses ÊTRE + subject agreement: ${subj.label} ${subj.refl} ${agreedPP}.` };
+  }
+  if (verb.aux === "être") {
+    const agreedPP = applyAgreement(verb.pp, subj);
+    return { pronounDisplay: subj.label, answer: `${subj.etre} ${agreedPP}`, explanation: `${verb.inf} takes ÊTRE (${subj.etre}) + agreed past participle "${agreedPP}".` };
+  }
+  if (subj.key === "je") {
+    return { pronounDisplay: "J'", answer: `ai ${verb.pp}`, explanation: `${verb.inf} uses AVOIR (J'ai) + past participle "${verb.pp}".` };
+  }
+  return { pronounDisplay: subj.label, answer: `${subj.avoir} ${verb.pp}`, explanation: `${verb.inf} uses AVOIR (${subj.avoir}) + past participle "${verb.pp}".` };
+}
+
+/* ============================================================================
+   4. UNLOCKABLE VISUAL THEMES CATALOG
+   ============================================================================ */
+const APP_THEMES = [
+  {
+    id: "default_paris",
+    name: "Académie Classique",
+    desc: "Crisp Parisian ivory & royal cobalt accents.",
+    cost: 0,
+    previewColors: ["#eef2ff", "#1e1b4b", "#f59e0b"],
+    vars: {
+      "--app-bg": "linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f1f5f9 100%)",
+      "--header-bg": "rgba(15, 23, 42, 0.95)",
+      "--header-border": "rgba(99, 102, 241, 0.35)",
+      "--accent-glow": "rgba(99, 102, 241, 0.22)",
+      "--card-surface": "#ffffff",
+      "--card-border": "#e2e8f0",
+      "--text-main": "#0f172a",
+      "--hero-grad": "linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4c1d95 100%)"
+    }
+  },
+  {
+    id: "versailles_gold",
+    name: "Versailles Royal Gold",
+    desc: "Opulent palace marble, champagne & gilded sunbeams.",
+    cost: 280,
+    previewColors: ["#fef3c7", "#451a03", "#f59e0b"],
+    vars: {
+      "--app-bg": "linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%)",
+      "--header-bg": "rgba(69, 26, 3, 0.95)",
+      "--header-border": "rgba(251, 191, 36, 0.5)",
+      "--accent-glow": "rgba(245, 158, 11, 0.3)",
+      "--card-surface": "#fffdf7",
+      "--card-border": "#fcd34d",
+      "--text-main": "#451a03",
+      "--hero-grad": "linear-gradient(135deg, #78350f 0%, #b45309 55%, #d97706 100%)"
+    }
+  },
+  {
+    id: "sakura_montmartre",
+    name: "Sakura Montmartre",
+    desc: "Dreamy rose-quartz twilight & pastel blossom glow.",
+    cost: 340,
+    previewColors: ["#fce7f3", "#831843", "#f43f5e"],
+    vars: {
+      "--app-bg": "linear-gradient(135deg, #fff1f2 0%, #fce7f3 50%, #fae8ff 100%)",
+      "--header-bg": "rgba(80, 7, 36, 0.95)",
+      "--header-border": "rgba(244, 114, 182, 0.45)",
+      "--accent-glow": "rgba(244, 63, 94, 0.25)",
+      "--card-surface": "#ffffff",
+      "--card-border": "#fbcfe8",
+      "--text-main": "#500724",
+      "--hero-grad": "linear-gradient(135deg, #831843 0%, #be185d 55%, #9333ea 100%)"
+    }
+  },
+  {
+    id: "cote_azur",
+    name: "Côte d'Azur Riviera",
+    desc: "Mediterranean turquoise waters & sunlit coral skies.",
+    cost: 400,
+    previewColors: ["#e0f2fe", "#0c4a6e", "#06b6d4"],
+    vars: {
+      "--app-bg": "linear-gradient(135deg, #ecfeff 0%, #e0f2fe 50%, #ccfbf1 100%)",
+      "--header-bg": "rgba(8, 51, 68, 0.95)",
+      "--header-border": "rgba(34, 211, 238, 0.45)",
+      "--accent-glow": "rgba(6, 182, 212, 0.26)",
+      "--card-surface": "#ffffff",
+      "--card-border": "#a5f3fc",
+      "--text-main": "#083344",
+      "--hero-grad": "linear-gradient(135deg, #0e7490 0%, #0284c7 55%, #0d9488 100%)"
+    }
+  },
+  {
+    id: "louvre_emerald",
+    name: "Louvre Emerald Gallery",
+    desc: "Lush botanical jade & museum gold elegance.",
+    cost: 480,
+    previewColors: ["#d1fae5", "#064e3b", "#10b981"],
+    vars: {
+      "--app-bg": "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #fef9c3 100%)",
+      "--header-bg": "rgba(2, 44, 34, 0.95)",
+      "--header-border": "rgba(52, 211, 153, 0.45)",
+      "--accent-glow": "rgba(16, 185, 129, 0.25)",
+      "--card-surface": "#ffffff",
+      "--card-border": "#a7f3d0",
+      "--text-main": "#022c22",
+      "--hero-grad": "linear-gradient(135deg, #064e3b 0%, #047857 55%, #0f766e 100%)"
+    }
+  },
+  {
+    id: "cyber_lyon",
+    name: "Neon Cyber-Lyon",
+    desc: "Electric midnight obsidian with luminous synthwave violet.",
+    cost: 650,
+    previewColors: ["#090d16", "#311042", "#d946ef"],
+    vars: {
+      "--app-bg": "linear-gradient(135deg, #090d16 0%, #13112b 50%, #1e1035 100%)",
+      "--header-bg": "rgba(9, 13, 22, 0.96)",
+      "--header-border": "rgba(217, 70, 239, 0.5)",
+      "--accent-glow": "rgba(217, 70, 239, 0.35)",
+      "--card-surface": "#161b2e",
+      "--card-border": "#3b2d63",
+      "--text-main": "#f1f5f9",
+      "--hero-grad": "linear-gradient(135deg, #1e1b4b 0%, #581c87 55%, #86198f 100%)"
+    }
+  }
+];
+
+function applyActiveTheme() {
+  const theme = APP_THEMES.find(t => t.id === state.activeTheme) || APP_THEMES[0];
+  const root = document.documentElement;
+  Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v));
+
+  const sel = document.getElementById('hud-theme-select');
+  if (sel) {
+    sel.innerHTML = state.unlockedThemes.map(tid => {
+      const th = APP_THEMES.find(x => x.id === tid);
+      return th ? `<option value="${th.id}" class="text-slate-900" ${th.id === state.activeTheme ? 'selected' : ''}>🎨 ${th.name}</option>` : '';
+    }).join('');
+  }
+}
+
+function equipTheme(themeId) {
+  if (!state.unlockedThemes.includes(themeId)) return;
+  state.activeTheme = themeId;
+  SFX.pop();
+  applyActiveTheme();
+  if (!document.getElementById('view-shop').classList.contains('hidden')) renderShop();
+  saveGame();
+}
+
+function buyTheme(themeId) {
+  const th = APP_THEMES.find(t => t.id === themeId);
+  if (!th || state.unlockedThemes.includes(themeId)) return;
+  if (state.coins < th.cost) {
+    SFX.wrong();
+    showToast(`Need 🪙 ${th.cost} coins for ${th.name}!`, "bg-rose-600");
+    return;
+  }
+  state.coins -= th.cost;
+  state.unlockedThemes.push(themeId);
+  state.activeTheme = themeId;
+  SFX.evolve();
+  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 55, th.previewColors);
+  showToast(`🎨 Unlocked & Equipped "${th.name}"!`, "bg-fuchsia-600");
+  applyActiveTheme();
+  updateTopHUD();
+  renderShop();
+  saveGame();
+}
+
+/* ============================================================================
+   5. PET NATURES, LORE & INTRICATE MULTI-LAYERED SVG SPECIES
+   ============================================================================ */
+const PET_NATURES = [
+  { id: "erudit", name: "Érudit", desc: "+15% XP Gain", xpMult: 1.15, vaultMult: 1.0, capBonus: 0, coinBonus: 0 },
+  { id: "magnat", name: "Magnat", desc: "+15% Vault Speed", xpMult: 1.0, vaultMult: 1.15, capBonus: 0, coinBonus: 0 },
+  { id: "chanceux", name: "Chanceux", desc: "+8% Quiz Coins", xpMult: 1.0, vaultMult: 1.0, capBonus: 0, coinBonus: 0.08 },
+  { id: "stoique", name: "Stoïque", desc: "+35 Vault Cap", xpMult: 1.0, vaultMult: 1.0, capBonus: 35, coinBonus: 0 },
+  { id: "prodige", name: "Prodige", desc: "+8% Vault & XP", xpMult: 1.08, vaultMult: 1.08, capBonus: 15, coinBonus: 0.04 }
+];
+
+function getNature(id) {
+  return PET_NATURES.find(n => n.id === id) || PET_NATURES[0];
+}
+
+function rollRandomNature() {
+  return PET_NATURES[Math.floor(Math.random() * PET_NATURES.length)].id;
+}
+
+const PET_SPECIES = [
+  // COMMON (50% total: 4 species x 12.5%)
+  { id: "baguette_pup", name: "Baguette Pup", evo1: "Brioche Hound", evo2: "Boulangerie Cerberus", rarity: "Common", gachaWeight: 12.5, vaultRate: 2.8, vaultCap: 65, powerType: "coin_boost", powerVal: 0.2, powerDesc: "1.2x Quiz Coins", archetype: "celestial_fox", p1: "#f59e0b", p2: "#fef3c7", p3: "#b45309", gem: "#38bdf8", lore: "Born inside a warm Montmartre bakery oven, its golden coat smells faintly of toasted brioche and cinnamon.", phrases: [{fr:"Très bien !",en:"Very good!"},{fr:"Tu es génial !",en:"You're awesome!"}] },
+  { id: "beret_frog", name: "Beret Frog", evo1: "Maestro Grenouille", evo2: "Le Roi Amphibe", rarity: "Common", gachaWeight: 12.5, vaultRate: 3.0, vaultCap: 75, powerType: "vault_cap", powerVal: 45, powerDesc: "+45 Vault Capacity", archetype: "arcane_amphibian", p1: "#10b981", p2: "#d1fae5", p3: "#047857", gem: "#fbbf24", lore: "A scholarly pond poet from Giverny who composes sonnets about water lilies and irregular participles.", phrases: [{fr:"C'est parti !",en:"Let's go!"},{fr:"Bravo !",en:"Bravo!"}] },
+  { id: "escargot", name: "Escargot Chrono", evo1: "Turbo Nautilus", evo2: "Astral Ammonite", rarity: "Common", gachaWeight: 12.5, vaultRate: 3.2, vaultCap: 70, powerType: "shield", powerVal: 1, powerDesc: "Streak Shield (1x)", archetype: "chrono_shell", p1: "#14b8a6", p2: "#ccfbf1", p3: "#0f766e", gem: "#f43f5e", lore: "Its spiral shell is etched with ancient clockwork dials that rewind careless grammar mistakes.", phrases: [{fr:"Doucement mais sûrement !",en:"Slowly but surely!"}] },
+  { id: "pigeon_paris", name: "Plume de Paris", evo1: "Faucon Lumière", evo2: "Aigle Impérial", rarity: "Common", gachaWeight: 12.5, vaultRate: 3.0, vaultCap: 70, powerType: "coin_boost", powerVal: 0.22, powerDesc: "1.22x Quiz Coins", archetype: "royal_avian", p1: "#64748b", p2: "#e2e8f0", p3: "#334155", gem: "#a855f7", lore: "Once a humble courtyard messenger, its feathers shimmer with royal heraldry as it ascends.", phrases: [{fr:"Magnifique envol !",en:"Magnificent flight!"}] },
+
+  // RARE (30% total: 4 species x 7.5%)
+  { id: "croissant_cat", name: "Croissant Lynx", evo1: "Pâtisserie Panther", evo2: "Celestial Tiger", rarity: "Rare", gachaWeight: 7.5, vaultRate: 4.8, vaultCap: 115, powerType: "hint", powerVal: 1, powerDesc: "Smart Aux/Start Hint", archetype: "mystic_feline", p1: "#fb923c", p2: "#ffedd5", p3: "#c2410c", gem: "#38bdf8", lore: "With crescent-shaped ear tufts and sapphire forehead gems, it sniffs out hidden auxiliary verbs.", phrases: [{fr:"Purr-fait !",en:"Purr-fect!"},{fr:"Magnifique !",en:"Magnificent!"}] },
+  { id: "macaron_bunny", name: "Macaron Hare", evo1: "Pastel Jackalope", evo2: "Royal Confiseur", rarity: "Rare", gachaWeight: 7.5, vaultRate: 5.2, vaultCap: 125, powerType: "coin_boost", powerVal: 0.3, powerDesc: "1.3x Quiz Coins", archetype: "astral_hare", p1: "#f472b6", p2: "#fce7f3", p3: "#be185d", gem: "#fde047", lore: "Leaps across Parisian rooftops leaving trails of rosewater sparkles and golden sugar dust.", phrases: [{fr:"Fantastique !",en:"Fantastic!"}] },
+  { id: "renard_bleu", name: "Renard Saphir", evo1: "Kitsune Azur", evo2: "Esprit Boréal", rarity: "Rare", gachaWeight: 7.5, vaultRate: 5.5, vaultCap: 130, powerType: "streak_boost", powerVal: 0.25, powerDesc: "1.25x Streak Bonus", archetype: "celestial_fox", p1: "#0284c7", p2: "#e0f2fe", p3: "#1e3a8a", gem: "#34d399", lore: "A twin-tailed frost fox from the Vosges mountains whose aurora tails ignite during long win streaks.", phrases: [{fr:"Quelle ruse !",en:"How clever!"}] },
+  { id: "tortue_jade", name: "Tortue Bastion", evo1: "Citadelle Émeraude", evo2: "Léviathan Terrestre", rarity: "Rare", gachaWeight: 7.5, vaultRate: 5.0, vaultCap: 150, powerType: "vault_cap", powerVal: 70, powerDesc: "+70 Vault Capacity", archetype: "chrono_shell", p1: "#059669", p2: "#a7f3d0", p3: "#064e3b", gem: "#f59e0b", lore: "Carries a miniature emerald fortress upon its carapace capable of hoarding vast coin reserves.", phrases: [{fr:"Inébranlable !",en:"Unshakeable!"}] },
+
+  // EPIC (15% total: 4 species x 3.75%)
+  { id: "eiffel_owl", name: "Eiffel Arch-Owl", evo1: "Lumière Grand-Duc", evo2: "Oracle d'Athéna", rarity: "Epic", gachaWeight: 3.75, vaultRate: 9.2, vaultCap: 225, powerType: "hint", powerVal: 1, powerDesc: "Aux & Accord Hint", archetype: "royal_avian", p1: "#6366f1", p2: "#e0e7ff", p3: "#312e81", gem: "#fbbf24", lore: "Perches atop iron lattice spires at midnight, peering into the etymology of every French verb.", phrases: [{fr:"Quelle sagesse !",en:"What wisdom!"}] },
+  { id: "poodle_royale", name: "Caniche Versailles", evo1: "Marquis Caniche", evo2: "Empereur Soleil", rarity: "Epic", gachaWeight: 3.75, vaultRate: 10.5, vaultCap: 250, powerType: "streak_boost", powerVal: 0.5, powerDesc: "1.5x Streak Multiplier", archetype: "mystic_feline", p1: "#a855f7", p2: "#f3e8ff", p3: "#581c87", gem: "#f43f5e", lore: "Adorned in amethyst velvet ruffles from the Hall of Mirrors, rewarding flawless streaks with royal opulence.", phrases: [{fr:"Oh là là, quel talent !",en:"Oh la la, what talent!"}] },
+  { id: "loup_argent", name: "Loup Gévaudan", evo1: "Paladin Lunaire", evo2: "Fenrir Astral", rarity: "Epic", gachaWeight: 3.75, vaultRate: 11.0, vaultCap: 260, powerType: "coin_boost", powerVal: 0.45, powerDesc: "1.45x Quiz Coins", archetype: "celestial_fox", p1: "#475569", p2: "#f1f5f9", p3: "#0f172a", gem: "#38bdf8", lore: "Forged from starlight and silver mist, howling beneath a crescent moon whenever a verb is mastered.", phrases: [{fr:"La meute triomphe !",en:"The pack triumphs!"}] },
+  { id: "cerf_foret", name: "Cerf Brocéliande", evo1: "Sylvegardien", evo2: "Esprit Sylvestre", rarity: "Epic", gachaWeight: 3.75, vaultRate: 10.0, vaultCap: 280, powerType: "shield", powerVal: 1, powerDesc: "Streak Shield (1x)", archetype: "astral_hare", p1: "#0d9488", p2: "#ccfbf1", p3: "#115e59", gem: "#fde047", lore: "Guardian of the enchanted forest of Brocéliande whose glowing antlers ward off broken streaks.", phrases: [{fr:"La magie opère !",en:"Magic is at work!"}] },
+
+  // LEGENDARY (5% total: 4 species x 1.25%)
+  { id: "phoenix_lumiere", name: "Phoenix Lumière", evo1: "Solaris Phénix", evo2: "Étoile Éternelle", rarity: "Legendary", gachaWeight: 1.25, vaultRate: 18.5, vaultCap: 430, powerType: "coin_boost", powerVal: 0.65, powerDesc: "1.65x Quiz Coins", archetype: "royal_avian", p1: "#f97316", p2: "#fef08a", p3: "#9a3412", gem: "#ec4899", lore: "An immortal solar firebird whose radiant plumage illuminates the City of Light like a second dawn.", phrases: [{fr:"Éblouissant !",en:"Dazzling!"}] },
+  { id: "fleur_dragon", name: "Fleur-de-Lis Dragon", evo1: "Sovereign Wyrm", evo2: "Cosmic Leviathan", rarity: "Legendary", gachaWeight: 1.25, vaultRate: 22.0, vaultCap: 500, powerType: "omni", powerVal: 0.75, powerDesc: "1.75x Coins + Shield", archetype: "sovereign_dragon", p1: "#e11d48", p2: "#ffe4e6", p3: "#881337", gem: "#fde047", lore: "Crowned with golden fleurs-de-lis and crimson scales, commanding both offensive coin multipliers and streak shields.", phrases: [{fr:"LÉGENDAIRE !",en:"LEGENDARY!"}] },
+  { id: "licorne_etoile", name: "Licorne Céleste", evo1: "Pégase Astral", evo2: "Souveraine Nébuleuse", rarity: "Legendary", gachaWeight: 1.25, vaultRate: 20.0, vaultCap: 470, powerType: "streak_boost", powerVal: 0.75, powerDesc: "1.75x Streak Bonus", archetype: "astral_hare", p1: "#8b5cf6", p2: "#ede9fe", p3: "#4c1d95", gem: "#22d3ee", lore: "Gallops across nebula constellations, turning every consecutive correct answer into a shower of starlight.", phrases: [{fr:"Pure magie !",en:"Pure magic!"}] },
+  { id: "gargouille_notre", name: "Gargouille d'Or", evo1: "Séraphin de Pierre", evo2: "Colosse Notre-Dame", rarity: "Legendary", gachaWeight: 1.25, vaultRate: 21.0, vaultCap: 490, powerType: "omni", powerVal: 0.7, powerDesc: "1.7x Coins + Shield", archetype: "sovereign_dragon", p1: "#d97706", p2: "#fef3c7", p3: "#451a03", gem: "#10b981", lore: "Awakened from gilded cathedral stone with emerald eyes, fiercely guarding its master's streak and treasury.", phrases: [{fr:"Gardien éternel !",en:"Eternal guardian!"}] },
+
+  // BREEDING-ONLY MYTHIC HYBRIDS (gachaWeight: 0)
+  { id: "caniche_draconique", name: "Caniche Draconique", evo1: "Wyvern Royale", evo2: "Empereur Céleste", rarity: "Legendary", gachaWeight: 0, vaultRate: 26.0, vaultCap: 560, powerType: "omni", powerVal: 0.85, powerDesc: "1.85x Coins + Shield", archetype: "sovereign_dragon", p1: "#ec4899", p2: "#fce7f3", p3: "#831843", gem: "#fde047", lore: "A mythic hybrid uniting Versailles elegance with draconic majesty. Possesses the highest vault output in the Academy.", phrases: [{fr:"Fusion parfaite !",en:"Perfect fusion!"}] },
+  { id: "griffon_patissier", name: "Griffon Pâtissier", evo1: "Arch-Griffon Doré", evo2: "Mythic Boulanger", rarity: "Legendary", gachaWeight: 0, vaultRate: 25.0, vaultCap: 540, powerType: "coin_boost", powerVal: 0.8, powerDesc: "1.8x Quiz Coins", archetype: "royal_avian", p1: "#eab308", p2: "#fef9c3", p3: "#713f12", gem: "#38bdf8", lore: "Born from fusing feline pastry intuition with owl-arch wisdom, conjuring golden coins from thin air.", phrases: [{fr:"Un chef-d'œuvre !",en:"A masterpiece!"}] }
+];
+
+const BREEDING_RECIPES = [
+  { p1: "poodle_royale", p2: "fleur_dragon", result: "caniche_draconique", label: "Caniche Versailles + Fleur-de-Lis Dragon" },
+  { p1: "croissant_cat", p2: "eiffel_owl", result: "griffon_patissier", label: "Croissant Lynx + Eiffel Arch-Owl" }
+];
+
+const ACCESSORIES = [
+  { id: "none", name: "None", icon: "🚫", cost: 0 },
+  { id: "beret", name: "Beret", icon: "🎨", cost: 100 },
+  { id: "crown", name: "Crown", icon: "👑", cost: 300 },
+  { id: "shades", name: "Shades", icon: "🕶️", cost: 180 },
+  { id: "bowtie", name: "Bow", icon: "🎀", cost: 140 },
+  { id: "halo", name: "Halo", icon: "😇", cost: 420 }
+];
+
+function getSpecies(id) {
+  return PET_SPECIES.find(s => s.id === id) || PET_SPECIES[0];
+}
+
+function getPetDisplayName(pet) {
+  if (pet.nickname && pet.nickname.trim()) return pet.nickname.trim();
+  const sp = getSpecies(pet.speciesId);
+  if (pet.stage === 2) return sp.evo2;
+  if (pet.stage === 1) return sp.evo1;
+  return sp.name;
+}
+
+function getPetVaultStats(pet) {
+  const sp = getSpecies(pet.speciesId);
+  const nat = getNature(pet.nature);
+  const stars = pet.stars || 1;
+  const starMult = 1 + (stars - 1) * 0.1;
+  const stageMult = pet.stage === 2 ? 2.25 : pet.stage === 1 ? 1.5 : 1.0;
+  const happyMult = (pet.happyTimer && pet.happyTimer > 0) ? 1.5 : 1.0;
+  const hab = ZOO_HABITATS.find(h => h.id === state.zooHabitat) || ZOO_HABITATS[0];
+  const habVaultMult = 1 + (hab.vaultBonus || 0);
+
+  const rate = +(sp.vaultRate * (1 + (pet.level - 1) * 0.25) * stageMult * starMult * nat.vaultMult * habVaultMult * happyMult).toFixed(1);
+  const cap = Math.round((sp.vaultCap * (1 + (pet.level - 1) * 0.3) * stageMult * starMult) + nat.capBonus);
+  return { rate, cap };
+}
+
+/* ============================================================================
+   INTRICATE MULTI-LAYERED SVG RENDERER (WITH CELESTIAL RUNES, WINGS, ARMOR & ORBS)
+   ============================================================================ */
+function renderPetSVG(pet, size = 88) {
+  const sp = getSpecies(pet.speciesId);
+  const stage = pet.stage || 0;
+  const acc = pet.accessory || "none";
+  const uid = `${sp.id}_${stage}_${Math.random().toString(36).slice(2, 6)}`;
+
+  // Stage-dependent ornate aura, zodiac runes & floating elemental orbs
+  const celestialRing = stage >= 2
+    ? `<g opacity="0.95">
+         <circle cx="60" cy="60" r="53" fill="none" stroke="${sp.gem}" stroke-width="2" stroke-dasharray="7 4"/>
+         <circle cx="60" cy="60" r="47" fill="none" stroke="${sp.p1}" stroke-width="1.5" stroke-dasharray="2 6"/>
+         <polygon points="60,2 63.5,10 72,10 65,15 67.5,23 60,18 52.5,23 55,15 48,10 56.5,10" fill="${sp.gem}" stroke="#ffffff" stroke-width="0.8"/>
+         <circle cx="13" cy="36" r="4" fill="${sp.gem}" stroke="#ffffff" stroke-width="1.2"/>
+         <circle cx="107" cy="36" r="4" fill="${sp.gem}" stroke="#ffffff" stroke-width="1.2"/>
+       </g>`
+    : stage === 1
+    ? `<g opacity="0.8">
+         <circle cx="60" cy="60" r="49" fill="none" stroke="${sp.p1}" stroke-width="2" stroke-dasharray="8 4"/>
+         <circle cx="16" cy="40" r="3" fill="${sp.gem}"/>
+         <circle cx="104" cy="40" r="3" fill="${sp.gem}"/>
+       </g>`
+    : '';
+
+  // Multi-layered Feathered / Energy Wings
+  const hasWings = stage >= 1 || sp.archetype === 'royal_avian' || sp.archetype === 'sovereign_dragon';
+  const wingsLayer = hasWings ? `
+    <g>
+      <path d="M34,62 C6,42 2,16 24,14 C28,28 34,40 40,50 Z" fill="url(#wingGrad_${uid})" stroke="${sp.p3}" stroke-width="1.8"/>
+      <path d="M32,66 C8,56 4,38 20,34 C26,44 32,52 38,58 Z" fill="${sp.p2}" stroke="${sp.p3}" stroke-width="1.4"/>
+      <path d="M33,71 C14,68 12,54 24,50 C29,56 34,62 39,66 Z" fill="${sp.gem}" opacity="0.85"/>
+      <path d="M86,62 C114,42 118,16 96,14 C92,28 86,40 80,50 Z" fill="url(#wingGrad_${uid})" stroke="${sp.p3}" stroke-width="1.8"/>
+      <path d="M88,66 C112,56 116,38 100,34 C94,44 88,52 82,58 Z" fill="${sp.p2}" stroke="${sp.p3}" stroke-width="1.4"/>
+      <path d="M87,71 C106,68 108,54 96,50 C91,56 86,62 81,66 Z" fill="${sp.gem}" opacity="0.85"/>
+    </g>
+  ` : '';
+
+  // Archetype-specific ornate tail / back silhouette
+  let backTailLayer = '';
+  if (sp.archetype === 'celestial_fox') {
+    backTailLayer = `
+      <path d="M78,86 C108,88 116,58 96,44 C92,60 84,70 74,76 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <path d="M96,44 C105,51 105,63 96,68 C92,61 92,53 96,44 Z" fill="${sp.p2}"/>
+      ${stage >= 1 ? `<path d="M42,86 C12,88 4,58 24,44 C28,60 36,70 46,76 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/><path d="M24,44 C15,51 15,63 24,68 C28,61 28,53 24,44 Z" fill="${sp.p2}"/>` : ''}
+    `;
+  } else if (sp.archetype === 'sovereign_dragon') {
+    backTailLayer = `
+      <path d="M76,88 Q110,95 108,65 Q96,74 80,78 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <polygon points="108,65 117,56 102,59" fill="${sp.gem}" stroke="${sp.p3}" stroke-width="1.2"/>
+      <polygon points="94,76 98,68 89,71" fill="${sp.p2}"/>
+    `;
+  } else if (sp.archetype === 'chrono_shell') {
+    backTailLayer = `
+      <path d="M24,74 C22,32 98,32 96,74 Z" fill="url(#wingGrad_${uid})" stroke="${sp.p3}" stroke-width="2.5"/>
+      <path d="M60,54 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" fill="none" stroke="${sp.p2}" stroke-width="2.5" stroke-dasharray="6 3"/>
+      <path d="M60,54 m-10,0 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+      <circle cx="60" cy="54" r="6" fill="${sp.gem}" stroke="#ffffff" stroke-width="1.5"/>
+    `;
+  }
+
+  // Archetype-specific sculpted head, ears, horns & crest markings
+  let headAndEars = '';
+  if (sp.archetype === 'sovereign_dragon') {
+    headAndEars = `
+      <path d="M41,36 L24,10 L48,27 Z" fill="${sp.gem}" stroke="${sp.p3}" stroke-width="1.8"/>
+      <path d="M79,36 L96,10 L72,27 Z" fill="${sp.gem}" stroke="${sp.p3}" stroke-width="1.8"/>
+      <polygon points="60,14 54,30 66,30" fill="${sp.p2}" stroke="${sp.p3}" stroke-width="1.5"/>
+      <path d="M33,56 Q33,27 60,27 Q87,27 87,56 Q89,85 60,87 Q31,85 33,56 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2.2"/>
+      <path d="M41,64 Q60,55 79,64 Q75,83 60,84 Q45,83 41,64 Z" fill="${sp.p2}"/>
+      <path d="M46,72 L74,72 M48,78 L72,78" stroke="${sp.p1}" stroke-width="1.5" opacity="0.6"/>
+      <polygon points="60,33 54,42 60,49 66,42" fill="${sp.gem}" stroke="#ffffff" stroke-width="1"/>
+    `;
+  } else if (sp.archetype === 'royal_avian') {
+    headAndEars = `
+      <path d="M60,28 L50,8 L60,17 L70,8 Z" fill="${sp.gem}" stroke="${sp.p3}" stroke-width="1.5"/>
+      <path d="M39,42 L24,24 L44,33 Z" fill="${sp.p1}" stroke="${sp.p3}" stroke-width="1.5"/>
+      <path d="M81,42 L96,24 L76,33 Z" fill="${sp.p1}" stroke="${sp.p3}" stroke-width="1.5"/>
+      <path d="M34,58 C34,29 86,29 86,58 C88,85 75,91 60,91 C45,91 32,85 34,58 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2.2"/>
+      <path d="M42,62 Q60,51 78,62 Q74,85 60,87 Q46,85 42,62 Z" fill="${sp.p2}"/>
+      <path d="M49,68 L60,75 L71,68 M51,75 L60,81 L69,75" fill="none" stroke="${sp.p3}" stroke-width="1.7" stroke-linecap="round"/>
+      <polygon points="54,55 66,55 60,65" fill="#fbbf24" stroke="${sp.p3}" stroke-width="1.5"/>
+    `;
+  } else if (sp.archetype === 'astral_hare') {
+    headAndEars = `
+      <path d="M46,36 C35,6 48,2 54,32 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <path d="M47,32 C41,13 48,11 51,30 Z" fill="${sp.p2}"/>
+      <path d="M74,36 C85,6 72,2 66,32 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <path d="M73,32 C79,13 72,11 69,30 Z" fill="${sp.p2}"/>
+      ${stage >= 1 ? `<path d="M60,30 L56,8 L64,8 Z" fill="${sp.gem}" stroke="${sp.p3}" stroke-width="1.4"/>` : ''}
+      <path d="M35,60 C35,33 85,33 85,60 C87,85 75,89 60,89 C45,89 33,85 35,60 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2.2"/>
+      <ellipse cx="60" cy="73" rx="19" ry="13" fill="${sp.p2}"/>
+      <polygon points="60,35 55,42 60,48 65,42" fill="${sp.gem}" stroke="#ffffff" stroke-width="1"/>
+    `;
+  } else if (sp.archetype === 'arcane_amphibian') {
+    headAndEars = `
+      <circle cx="44" cy="36" r="11.5" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <circle cx="76" cy="36" r="11.5" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <path d="M33,62 C33,37 87,37 87,62 C89,85 75,89 60,89 C45,89 31,85 33,62 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2.2"/>
+      <path d="M39,66 Q60,57 81,66 Q77,85 60,86 Q43,85 39,66 Z" fill="${sp.p2}"/>
+      <polygon points="60,43 54,50 60,56 66,50" fill="${sp.gem}" stroke="#ffffff" stroke-width="1"/>
+    `;
+  } else {
+    headAndEars = `
+      <polygon points="33,46 35,14 54,36" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <polygon points="38,42 39,22 50,36" fill="${sp.p2}"/>
+      <polygon points="87,46 85,14 66,36" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2"/>
+      <polygon points="82,42 81,22 70,36" fill="${sp.p2}"/>
+      <path d="M32,58 L25,54 L33,48 C35,31 85,31 87,48 L95,54 L88,58 C89,83 75,89 60,89 C45,89 31,83 32,58 Z" fill="url(#bodyGrad_${uid})" stroke="${sp.p3}" stroke-width="2.2"/>
+      <path d="M41,66 L47,60 L53,66 L60,58 L67,66 L73,60 L79,66 Q73,86 60,87 Q47,86 41,66 Z" fill="${sp.p2}"/>
+      <polygon points="60,35 55,42 60,48 65,42" fill="${sp.gem}" stroke="#ffffff" stroke-width="1"/>
+    `;
+  }
+
+  // 5-Layer Expressive Eyes with Radial Iris & Dual Starlight Catchlights
+  const eyesY = sp.archetype === 'arcane_amphibian' ? 36 : 51;
+  const eyesXOff = sp.archetype === 'arcane_amphibian' ? 16 : 12.5;
+  const eyesLayer = `
+    <g>
+      <ellipse cx="${60 - eyesXOff}" cy="${eyesY}" rx="6" ry="6.8" fill="#0f172a"/>
+      <ellipse cx="${60 + eyesXOff}" cy="${eyesY}" rx="6" ry="6.8" fill="#0f172a"/>
+      <circle cx="${60 - eyesXOff}" cy="${eyesY + 0.8}" r="3.8" fill="${sp.gem}"/>
+      <circle cx="${60 + eyesXOff}" cy="${eyesY + 0.8}" r="3.8" fill="${sp.gem}"/>
+      <circle cx="${60 - eyesXOff}" cy="${eyesY + 0.8}" r="1.8" fill="#0f172a"/>
+      <circle cx="${60 + eyesXOff}" cy="${eyesY + 0.8}" r="1.8" fill="#0f172a"/>
+      <circle cx="${60 - eyesXOff - 1.8}" cy="${eyesY - 2.2}" r="1.9" fill="#ffffff"/>
+      <circle cx="${60 + eyesXOff - 1.8}" cy="${eyesY - 2.2}" r="1.9" fill="#ffffff"/>
+      <circle cx="${60 - eyesXOff + 1.5}" cy="${eyesY + 2}" r="0.9" fill="#ffffff"/>
+      <circle cx="${60 + eyesXOff + 1.5}" cy="${eyesY + 2}" r="0.9" fill="#ffffff"/>
+    </g>
+  `;
+
+  // Mouth & Rosy Cheeks
+  const mouthLayer = sp.archetype !== 'royal_avian' ? `
+    <ellipse cx="${60 - eyesXOff - 4}" cy="${eyesY + 7}" rx="3.2" ry="1.8" fill="#fb7185" opacity="0.55"/>
+    <ellipse cx="${60 + eyesXOff + 4}" cy="${eyesY + 7}" rx="3.2" ry="1.8" fill="#fb7185" opacity="0.55"/>
+    <path d="M54,62 Q60,68 66,62" fill="none" stroke="${sp.p3}" stroke-width="2.2" stroke-linecap="round"/>
+    <ellipse cx="60" cy="59" rx="3.2" ry="2.1" fill="${sp.p3}"/>
+  ` : '';
+
+  // Front Articulated Paws
+  const pawsLayer = `
+    <g>
+      <ellipse cx="44" cy="87" rx="7" ry="4.5" fill="${sp.p2}" stroke="${sp.p3}" stroke-width="1.6"/>
+      <ellipse cx="76" cy="87" rx="7" ry="4.5" fill="${sp.p2}" stroke="${sp.p3}" stroke-width="1.6"/>
+    </g>
+  `;
+
+  // Stage 2 Royal Armor Collar & Gemmed Pauldrons
+  const armorLayer = stage >= 2 ? `
+    <g>
+      <path d="M31,74 Q42,67 49,76 L42,84 Q31,82 31,74 Z" fill="${sp.gem}" stroke="${sp.p3}" stroke-width="1.5"/>
+      <path d="M89,74 Q78,67 71,76 L78,84 Q89,82 89,74 Z" fill="${sp.gem}" stroke="${sp.p3}" stroke-width="1.5"/>
+      <polygon points="60,72 56,77 60,82 64,77" fill="#fbbf24" stroke="${sp.p3}" stroke-width="1.2"/>
+    </g>
+  ` : '';
+
+  // Accessories
+  let accLayer = '';
+  if (acc === 'beret') {
+    accLayer = `<ellipse cx="62" cy="27" rx="22" ry="8" transform="rotate(-10 62 27)" fill="#1d4ed8" stroke="#93c5fd" stroke-width="1.5"/><line x1="62" y1="19" x2="66" y2="14" stroke="#1d4ed8" stroke-width="3" stroke-linecap="round"/>`;
+  } else if (acc === 'crown') {
+    accLayer = `<polygon points="42,27 46,11 53,21 60,8 67,21 74,11 78,27" fill="#facc15" stroke="#92400e" stroke-width="1.8"/><circle cx="60" cy="20" r="2.5" fill="#e11d48"/>`;
+  } else if (acc === 'shades') {
+    accLayer = `<rect x="39" y="${eyesY - 5}" width="18" height="11" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/><rect x="63" y="${eyesY - 5}" width="18" height="11" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/><line x1="57" y1="${eyesY}" x2="63" y2="${eyesY}" stroke="#38bdf8" stroke-width="2"/>`;
+  } else if (acc === 'bowtie') {
+    accLayer = `<polygon points="46,79 60,84 46,89" fill="#2563eb"/><polygon points="74,79 60,84 74,89" fill="#e11d48"/><circle cx="60" cy="84" r="3.5" fill="#ffffff"/>`;
+  } else if (acc === 'halo') {
+    accLayer = `<ellipse cx="60" cy="10" rx="18" ry="5" fill="none" stroke="#fde047" stroke-width="3.5"/>`;
+  }
+
+  return `
+    <svg width="${size}" height="${size}" viewBox="0 0 120 110" class="overflow-visible drop-shadow-md">
+      <defs>
+        <linearGradient id="bodyGrad_${uid}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${sp.p2}"/>
+          <stop offset="45%" stop-color="${sp.p1}"/>
+          <stop offset="100%" stop-color="${sp.p3}"/>
+        </linearGradient>
+        <linearGradient id="wingGrad_${uid}" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="${sp.gem}"/>
+          <stop offset="100%" stop-color="${sp.p1}"/>
+        </linearGradient>
+      </defs>
+      ${celestialRing}
+      ${wingsLayer}
+      ${backTailLayer}
+      ${headAndEars}
+      ${eyesLayer}
+      ${mouthLayer}
+      ${pawsLayer}
+      ${armorLayer}
+      ${accLayer}
+    </svg>
+  `;
+}
+
+/* ============================================================================
+   6. ZOO HABITATS (COIN-UNLOCKABLE WITH PASSIVE BONUSES)
+   ============================================================================ */
+const ZOO_HABITATS = [
+  {
+    id: "cafe",
+    name: "☕ Parisian Café",
+    cost: 0,
+    bonusDesc: "+10% Zoo Interaction XP",
+    vaultBonus: 0,
+    zooXpMult: 1.1,
+    encClass: "relative w-full h-[360px] sm:h-[410px] rounded-3xl border-4 border-amber-300 shadow-inner overflow-hidden bg-gradient-to-b from-amber-100 via-orange-50 to-amber-200 transition-all duration-500",
+    scenerySVG: `
+      <svg class="w-full h-full opacity-55" viewBox="0 0 800 360" preserveAspectRatio="none">
+        <rect x="0" y="250" width="800" height="110" fill="#fde68a"/>
+        <path d="M120,250 L145,95 L155,95 L180,250 M132,180 L168,180 M139,135 L161,135" stroke="#b45309" stroke-width="4" fill="none"/>
+        <circle cx="650" cy="70" r="36" fill="#fef08a"/>
+        <path d="M560,250 Q640,215 740,250 Z" fill="#f59e0b" opacity="0.45"/>
+      </svg>
+      <div class="absolute bottom-5 right-8 text-4xl opacity-65">🥐☕🪑</div>
+    `
+  },
+  {
+    id: "lavender",
+    name: "💜 Lavender Meadow",
+    cost: 300,
+    bonusDesc: "+10% Passive Vault Speed",
+    vaultBonus: 0.1,
+    zooXpMult: 1.0,
+    encClass: "relative w-full h-[360px] sm:h-[410px] rounded-3xl border-4 border-purple-300 shadow-inner overflow-hidden bg-gradient-to-b from-indigo-100 via-purple-100 to-fuchsia-200 transition-all duration-500",
+    scenerySVG: `
+      <svg class="w-full h-full opacity-60" viewBox="0 0 800 360" preserveAspectRatio="none">
+        <path d="M0,235 Q220,185 450,235 T800,220 L800,360 L0,360 Z" fill="#d8b4fe"/>
+        <path d="M0,275 Q280,230 560,275 T800,265 L800,360 L0,360 Z" fill="#c084fc"/>
+        <circle cx="670" cy="68" r="32" fill="#fae8ff"/>
+      </svg>
+      <div class="absolute top-6 right-14 text-4xl opacity-75">🦋✨</div>
+      <div class="absolute bottom-5 left-8 text-4xl opacity-75">💜🌿🪻</div>
+    `
+  },
+  {
+    id: "chateau",
+    name: "🏰 Château Courtyard",
+    cost: 650,
+    bonusDesc: "+18% Passive Vault Speed",
+    vaultBonus: 0.18,
+    zooXpMult: 1.0,
+    encClass: "relative w-full h-[360px] sm:h-[410px] rounded-3xl border-4 border-rose-300 shadow-inner overflow-hidden bg-gradient-to-b from-sky-100 via-rose-50 to-emerald-200 transition-all duration-500",
+    scenerySVG: `
+      <svg class="w-full h-full opacity-55" viewBox="0 0 800 360" preserveAspectRatio="none">
+        <rect x="0" y="255" width="800" height="105" fill="#a7f3d0"/>
+        <rect x="290" y="120" width="220" height="135" fill="#fecdd3" stroke="#f43f5e" stroke-width="2"/>
+        <polygon points="280,120 400,55 520,120" fill="#fb7185"/>
+        <rect x="375" y="185" width="50" height="70" rx="25" fill="#fff1f2"/>
+      </svg>
+      <div class="absolute bottom-5 left-10 text-4xl opacity-75">⛲🌹👑</div>
+    `
+  },
+  {
+    id: "alpine",
+    name: "🏔️ Alpine Summit",
+    cost: 1100,
+    bonusDesc: "+28% Passive Vault Speed",
+    vaultBonus: 0.28,
+    zooXpMult: 1.0,
+    encClass: "relative w-full h-[360px] sm:h-[410px] rounded-3xl border-4 border-sky-300 shadow-inner overflow-hidden bg-gradient-to-b from-sky-200 via-blue-50 to-slate-200 transition-all duration-500",
+    scenerySVG: `
+      <svg class="w-full h-full opacity-65" viewBox="0 0 800 360" preserveAspectRatio="none">
+        <polygon points="80,265 240,85 400,265" fill="#94a3b8"/>
+        <polygon points="240,85 195,135 240,125 285,135" fill="#ffffff"/>
+        <polygon points="330,265 530,65 730,265" fill="#64748b"/>
+        <polygon points="530,65 475,125 530,112 585,125" fill="#ffffff"/>
+        <rect x="0" y="265" width="800" height="95" fill="#e2e8f0"/>
+      </svg>
+      <div class="absolute top-6 left-10 text-4xl opacity-75">❄️🏔️</div>
+      <div class="absolute bottom-5 right-10 text-4xl opacity-75">🌲⛷️</div>
+    `
+  }
+];
+
+/* ============================================================================
+   7. GAME STATE & SAFE LOCALSTORAGE PERSISTENCE
+   ============================================================================ */
+const SAVE_KEY = "passe_compose_pets_v5";
+
+let state = {
+  coins: 300,
+  treats: 4,
+  streak: 0,
+  pityCounter: 10,
+  shieldReady: false,
+  shieldCooldown: 0,
+  activeTheme: "default_paris",
+  unlockedThemes: ["default_paris"],
+  unlockedHabitats: ["cafe"],
+  zooHabitat: "cafe",
+  masteredVerbs: [],
+  missedCounts: {},
+  unlockedSpecies: ["baguette_pup"],
+  unlockedAccessories: ["none"],
+  activePetUids: ["pet_starter_1"],
+  pets: [
+    {
+      uid: "pet_starter_1",
+      speciesId: "baguette_pup",
+      nickname: "Baguette",
+      nature: "prodige",
+      stars: 1,
+      level: 1,
+      xp: 0,
+      stage: 0,
+      accessory: "none",
+      vaultCoins: 24,
+      affection: 1,
+      happyTimer: 0
+    }
+  ]
+};
+
+function saveGame() {
+  try {
+    state.coins = Math.max(0, Math.floor(Number(state.coins) || 0));
+    state.treats = Math.max(0, Math.floor(Number(state.treats) || 0));
+    state.streak = Math.max(0, Math.floor(Number(state.streak) || 0));
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  } catch (e) {}
+}
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY) || localStorage.getItem("passe_compose_pets_v4");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = { ...state, ...parsed };
+      if (!Array.isArray(state.unlockedThemes) || !state.unlockedThemes.length) state.unlockedThemes = ["default_paris"];
+      if (!Array.isArray(state.unlockedHabitats) || !state.unlockedHabitats.length) state.unlockedHabitats = ["cafe"];
+      if (!state.unlockedHabitats.includes(state.zooHabitat)) state.zooHabitat = "cafe";
+
+      // Filter masteredVerbs strictly to the 50 verbs in VERB_DB
+      const validInfs = new Set(VERB_DB.map(v => v.inf));
+      state.masteredVerbs = (state.masteredVerbs || []).filter(inf => validInfs.has(inf));
+
+      // Backfill nature & stars and sanitize values
+      state.pets = (state.pets || []).map(p => ({
+        ...p,
+        nature: p.nature || rollRandomNature(),
+        stars: Math.min(5, Math.max(1, Number(p.stars) || 1)),
+        level: Math.max(1, Number(p.level) || 1),
+        xp: Math.max(0, Number(p.xp) || 0),
+        vaultCoins: Math.max(0, Number(p.vaultCoins) || 0)
+      }));
+    }
+  } catch (e) {}
+}
+
+/* ============================================================================
+   8. MANUAL-CLAIM COIN VAULTS & ANTI-EXPLOIT PET INTERACTIONS
+   ============================================================================ */
+const petInteractCooldowns = {}; // uid -> timestamp (20s anti-infinite XP farm)
+let dancePartyCooldownUntil = 0;
+
+function getActivePets() {
+  return state.activePetUids.map(uid => state.pets.find(p => p.uid === uid)).filter(Boolean);
+}
+
+function computeSquadBonuses() {
+  const active = getActivePets();
+  let coinMult = 1.0, streakMult = 1.0, hasShieldPet = false, hasHintPet = false, extraCap = 0;
+  active.forEach(pet => {
+    const sp = getSpecies(pet.speciesId);
+    const nat = getNature(pet.nature);
+    const stars = pet.stars || 1;
+    const scale = 1 + (pet.level - 1) * 0.05 + pet.stage * 0.2 + (stars - 1) * 0.08;
+    if (sp.powerType === "coin_boost" || sp.powerType === "omni") coinMult += sp.powerVal * scale;
+    coinMult += nat.coinBonus;
+    if (sp.powerType === "streak_boost") streakMult += sp.powerVal * scale;
+    if (sp.powerType === "shield" || sp.powerType === "omni") hasShieldPet = true;
+    if (sp.powerType === "hint" || sp.powerType === "omni") hasHintPet = true;
+    if (sp.powerType === "vault_cap") extraCap += sp.powerVal;
+  });
+  if (hasShieldPet && !state.shieldReady && state.shieldCooldown === 0) state.shieldReady = true;
+  return { coinMult: +coinMult.toFixed(2), streakMult: +streakMult.toFixed(2), hasShieldPet, hasHintPet, extraCap };
+}
+
+function grantPetXP(pet, baseAmount) {
+  const nat = getNature(pet.nature);
+  const gained = Math.max(1, Math.round(baseAmount * nat.xpMult));
+  pet.xp += gained;
+  while (pet.xp >= pet.level * 50) {
+    pet.xp -= pet.level * 50;
+    pet.level += 1;
+  }
+  return gained;
+}
+
+// Vault accumulation tick (requires manual claim)
+setInterval(() => {
+  const bonuses = computeSquadBonuses();
+  let changed = false;
+  getActivePets().forEach(pet => {
+    const { rate, cap } = getPetVaultStats(pet);
+    const maxCap = cap + bonuses.extraCap;
+    if (pet.happyTimer > 0) pet.happyTimer = Math.max(0, pet.happyTimer - 1);
+    if (pet.vaultCoins < maxCap) {
+      pet.vaultCoins = Math.min(maxCap, +(pet.vaultCoins + rate / 2).toFixed(1));
+      changed = true;
+    }
+  });
+  if (changed) {
+    updateTopHUD();
+    if (!document.getElementById('view-pets').classList.contains('hidden')) renderPetsHub();
+  }
+  updateDancePartyButton();
+}, 1000);
+
+setInterval(saveGame, 10000);
+
+function claimPetVault(uid, event) {
+  const pet = state.pets.find(p => p.uid === uid);
+  if (!pet || Math.floor(pet.vaultCoins) <= 0) return;
+  const amt = Math.floor(pet.vaultCoins);
+  pet.vaultCoins = +(pet.vaultCoins - amt).toFixed(1);
+  state.coins += amt;
+  SFX.claim();
+  const x = event ? event.clientX : window.innerWidth / 2;
+  const y = event ? event.clientY : 120;
+  spawnConfetti(x, y, 25);
+  spawnFloatingText(`+${amt} 🪙`, x, y - 20, "#fbbf24");
+  updateTopHUD();
+  if (!document.getElementById('view-pets').classList.contains('hidden')) renderPetsHub();
+  saveGame();
+}
+
+function claimAllVaults() {
+  let total = 0;
+  getActivePets().forEach(pet => {
+    const amt = Math.floor(pet.vaultCoins);
+    if (amt > 0) { total += amt; pet.vaultCoins = +(pet.vaultCoins - amt).toFixed(1); }
+  });
+  if (total <= 0) {
+    showToast("Vaults are still filling! Answer questions to surge vaults.", "bg-slate-700");
+    return;
+  }
+  state.coins += total;
+  SFX.claim();
+  spawnConfetti(window.innerWidth / 2, 140, 45);
+  spawnFloatingText(`+${total} 🪙 Vaults Claimed!`, window.innerWidth / 2 - 60, 120, "#fbbf24");
+  updateTopHUD();
+  if (!document.getElementById('view-pets').classList.contains('hidden')) renderPetsHub();
+  saveGame();
+}
+
+function interactWithPet(uid, event) {
+  const pet = state.pets.find(p => p.uid === uid);
+  if (!pet) return;
+  const sp = getSpecies(pet.speciesId);
+  const now = Date.now();
+  const lastTime = petInteractCooldowns[uid] || 0;
+  const onCooldown = (now - lastTime) < 20000; // 20s per-pet XP cooldown prevents infinite clicking
+
+  SFX.petChirp();
+  const phrase = sp.phrases[Math.floor(Math.random() * sp.phrases.length)];
+  const x = event ? event.clientX : window.innerWidth / 2;
+  const y = event ? event.clientY : 240;
+
+  if (!onCooldown) {
+    petInteractCooldowns[uid] = now;
+    pet.affection = (pet.affection || 1) + 1;
+    const hab = ZOO_HABITATS.find(h => h.id === state.zooHabitat) || ZOO_HABITATS[0];
+    const xpGained = grantPetXP(pet, Math.round(6 * (hab.zooXpMult || 1)));
+    spawnFloatingText(`❤️ "${phrase.fr}" (+${xpGained} XP)`, x - 45, y - 25, "#f43f5e");
+    if (!document.getElementById('view-pets').classList.contains('hidden')) renderPetsHub();
+    saveGame();
+  } else {
+    const secsLeft = Math.ceil((20000 - (now - lastTime)) / 1000);
+    spawnFloatingText(`💬 "${phrase.fr}" (XP in ${secsLeft}s)`, x - 45, y - 25, "#6366f1");
+  }
+}
+
+function feedTreatToPet(uid) {
+  if (state.treats <= 0) {
+    SFX.wrong();
+    showToast("No Croissants left! Get a 3-streak in Quiz or buy in Boutique.", "bg-rose-600");
+    return;
+  }
+  const pet = state.pets.find(p => p.uid === uid);
+  if (!pet) return;
+  state.treats -= 1;
+  pet.happyTimer = 90;
+  grantPetXP(pet, 25);
+  const bonuses = computeSquadBonuses();
+  const { cap } = getPetVaultStats(pet);
+  pet.vaultCoins = Math.min(cap + bonuses.extraCap, pet.vaultCoins + 20);
+  SFX.evolve();
+  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 30);
+  showToast(`🥐 ${getPetDisplayName(pet)} is ECSTATIC (1.5x Vault Speed for 90s)!`, "bg-amber-600");
+  updateTopHUD();
+  renderPetsHub();
+  saveGame();
+}
+
+function updateTopHUD() {
+  const bonuses = computeSquadBonuses();
+  document.getElementById('ui-coins').textContent = Math.floor(state.coins).toLocaleString();
+  document.getElementById('ui-treats').textContent = state.treats;
+  document.getElementById('ui-streak').textContent = state.streak;
+  const totalMult = +(bonuses.coinMult * (1 + Math.min(state.streak, 15) * 0.1 * bonuses.streakMult) * (timerMode === 'blitz' && blitzSeconds > 0 ? 1.5 : 1)).toFixed(2);
+  document.getElementById('ui-mult').textContent = `${totalMult}x`;
+
+  const shieldBadge = document.getElementById('ui-shield-badge');
+  if (bonuses.hasShieldPet && state.shieldReady) shieldBadge.classList.remove('hidden');
+  else shieldBadge.classList.add('hidden');
+
+  let totalVault = 0;
+  getActivePets().forEach(p => totalVault += Math.floor(p.vaultCoins));
+  const vaultPill = document.getElementById('hud-vault-pill');
+  if (totalVault >= 15) {
+    vaultPill.classList.remove('hidden');
+    vaultPill.classList.add('flex');
+    document.getElementById('hud-vault-amount').textContent = `+${totalVault}`;
+  } else {
+    vaultPill.classList.add('hidden');
+    vaultPill.classList.remove('flex');
+  }
+
+  document.getElementById('ui-pet-count-tab').textContent = state.pets.length;
+  document.getElementById('ui-mastered-count').textContent = state.masteredVerbs.length;
+  const studioTreats = document.getElementById('studio-treats-badge');
+  if (studioTreats) studioTreats.textContent = state.treats;
+}
+
+function switchTab(tabName) {
+  SFX.pop();
+  document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+  document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.className = "nav-btn flex items-center gap-1.5 px-4 py-2 rounded-2xl font-display font-bold text-xs sm:text-sm whitespace-nowrap transition bg-white/10 hover:bg-white/20 text-indigo-100";
+  });
+  const activeBtn = document.getElementById(`tab-${tabName}`);
+  if (activeBtn) activeBtn.className = "nav-btn flex items-center gap-1.5 px-4 py-2 rounded-2xl font-display font-bold text-xs sm:text-sm whitespace-nowrap transition bg-amber-400 text-indigo-950 shadow";
+
+  if (tabName === 'pets') renderPetsHub();
+  if (tabName === 'gacha') renderGachaOddsTable();
+  if (tabName === 'shop') renderShop();
+  if (tabName === 'zoo') { renderZoo(); renderBreedingLab(); }
+}
+
+/* ============================================================================
+   9. QUIZ ENGINE (WITH SPEED BLITZ EXPLOIT FIX)
+   ============================================================================ */
+let currentQuestion = null;
+let quizMode = 'mc';
+let timerMode = 'relaxed';
+let blitzSeconds = 60;
+let blitzInterval = null;
+let questionAnswered = false;
+let hintUsed = false;
+
+function setQuizMode(mode) {
+  quizMode = mode;
+  SFX.pop();
+  document.querySelectorAll('.qmode-btn').forEach(b => b.className = "qmode-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-700 hover:bg-indigo-50");
+  document.getElementById(`qmode-${mode}`).className = "qmode-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-indigo-600 text-white shadow-sm";
+  nextQuestion();
+}
+
+function setTimerMode(mode) {
+  timerMode = mode;
+  SFX.pop();
+  document.getElementById('timer-relaxed').className = mode === 'relaxed' ? "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-white text-indigo-700 shadow-sm" : "px-2.5 py-1 rounded-lg text-xs font-extrabold text-slate-600 hover:text-slate-900";
+  document.getElementById('timer-blitz').className = mode === 'blitz' ? "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-rose-600 text-white shadow-sm" : "px-2.5 py-1 rounded-lg text-xs font-extrabold text-slate-600 hover:text-slate-900";
+
+  if (mode === 'blitz') {
+    document.getElementById('blitz-bar-container').classList.remove('hidden');
+    startBlitzRound();
+  } else {
+    document.getElementById('blitz-bar-container').classList.add('hidden');
+    clearInterval(blitzInterval);
+    blitzSeconds = 60;
+  }
+  updateTopHUD();
+}
+
+function startBlitzRound() {
+  clearInterval(blitzInterval);
+  blitzSeconds = 60;
+  updateBlitzUI();
+  nextQuestion();
+  blitzInterval = setInterval(() => {
+    if (timerMode !== 'blitz') { clearInterval(blitzInterval); return; }
+    blitzSeconds -= 1;
+    updateBlitzUI();
+    if (blitzSeconds <= 0) {
+      clearInterval(blitzInterval);
+      SFX.evolve();
+      showToast("⏱️ Speed Blitz Time's Up! Returned to Relaxed Mode.", "bg-rose-600");
+      setTimerMode('relaxed'); // Automatically reverts so 1.5x cannot be farmed after 0s
+    }
+  }, 1000);
+}
+
+function updateBlitzUI() {
+  document.getElementById('blitz-time-text').textContent = Math.max(0, blitzSeconds);
+  document.getElementById('blitz-progress').style.width = `${(Math.max(0, blitzSeconds) / 60) * 100}%`;
+}
+
+function insertAccent(char) {
+  const input = document.getElementById('type-input');
+  const start = input.selectionStart || input.value.length;
+  input.value = input.value.slice(0, start) + char + input.value.slice(input.selectionEnd || input.value.length);
+  input.focus();
+}
+
+function generateDistractors(verb, subj, correctAns) {
+  const options = new Set([correctAns]);
+  const wrongAux = verb.aux === "être"
+    ? (subj.key === "je" ? `ai ${verb.pp}` : `${subj.avoir} ${verb.pp}`)
+    : `${subj.etre} ${verb.pp}`;
+  options.add(wrongAux);
+
+  for (const wpp of verb.wrongPPs) {
+    if (options.size >= 4) break;
+    const fake = verb.aux === "être" ? applyAgreement(wpp, subj) : wpp;
+    const full = verb.impersonal
+      ? `a ${wpp}`
+      : verb.reflexive
+      ? `${subj.refl} ${fake}`
+      : verb.aux === "être"
+      ? `${subj.etre} ${fake}`
+      : (subj.key === "je" ? `ai ${wpp}` : `${subj.avoir} ${wpp}`);
+    options.add(full);
+  }
+
+  // Fallback distractors if needed to ensure 4 distinct choices
+  const fallbacks = [`${subj.avoir} ${verb.inf.toLowerCase()}`, `${subj.etre} ${verb.pp}e`, `a ${verb.pp}s`];
+  for (const fb of fallbacks) {
+    if (options.size >= 4) break;
+    options.add(fb);
+  }
+
+  return Array.from(options).slice(0, 4).sort(() => Math.random() - 0.5);
+}
+
+function nextQuestion() {
+  questionAnswered = false;
+  hintUsed = false;
+  const filter = document.getElementById('quiz-deck-filter').value;
+  let pool = VERB_DB;
+  if (filter === 'weakest') {
+    const weak = VERB_DB.filter(v => (state.missedCounts[v.inf] || 0) > 0);
+    pool = weak.length > 0 ? weak : VERB_DB;
+  } else if (filter !== 'all') {
+    pool = VERB_DB.filter(v => v.cat === filter);
+  }
+
+  const verb = pool[Math.floor(Math.random() * pool.length)];
+  const subj = verb.impersonal ? SUBJECTS.find(s => s.key === "il") : SUBJECTS[Math.floor(Math.random() * SUBJECTS.length)];
+  const conj = buildConjugation(verb, subj);
+
+  if (quizMode === 'aux') {
+    currentQuestion = { verb, subj, mode: 'aux', answer: verb.aux === 'être' ? 'ÊTRE' : 'AVOIR', choices: ['AVOIR', 'ÊTRE'], explanation: `${verb.inf} uses ${verb.aux.toUpperCase()}.` };
+  } else if (quizMode === 'participle') {
+    const ppChoices = Array.from(new Set([verb.pp, ...verb.wrongPPs])).slice(0, 4).sort(() => Math.random() - 0.5);
+    currentQuestion = { verb, subj, mode: 'participle', answer: verb.pp, choices: ppChoices, explanation: `Past participle of ${verb.inf} is "${verb.pp}".` };
+  } else if (quizMode === 'fix') {
+    const broken = verb.aux === 'être' ? `${subj.avoir} ${verb.pp}` : `${subj.etre} ${verb.pp}`;
+    currentQuestion = { verb, subj, mode: 'fix', brokenPhrase: broken, pronounDisplay: conj.pronounDisplay, answer: conj.answer, choices: generateDistractors(verb, subj, conj.answer), explanation: conj.explanation };
+  } else {
+    currentQuestion = { verb, subj, mode: quizMode, pronounDisplay: conj.pronounDisplay, answer: conj.answer, choices: generateDistractors(verb, subj, conj.answer), explanation: conj.explanation };
+  }
+  renderQuestionUI();
+}
+
+function renderQuestionUI() {
+  if (!currentQuestion) return;
+  const { verb, subj, mode } = currentQuestion;
+  const badgeEl = document.getElementById('q-badge');
+  badgeEl.textContent = verb.cat === 'vandertramp' ? "🏠 ÊTRE Verb" : verb.cat === 'reflexive' ? "🪞 Reflexive" : verb.cat === 'starred' ? "⭐ Irregular" : "✍️ Regular";
+
+  const modeLabels = { mc: "Multiple Choice", type: "Type Answer", aux: "Auxiliary Check", participle: "Participle Match", fix: "Fix Mistake" };
+  document.getElementById('q-mode-tag').textContent = modeLabels[mode] || "Conjugate";
+  document.getElementById('q-english').textContent = `"${verb.en}"`;
+  document.getElementById('q-infinitive').textContent = verb.inf;
+  document.getElementById('q-hint-box').classList.add('hidden');
+  document.getElementById('q-feedback').classList.add('hidden');
+
+  const pronEl = document.getElementById('q-pronoun');
+  const blankEl = document.getElementById('q-blank');
+  const ctxEl = document.getElementById('q-context');
+  const genderNote = document.getElementById('q-gender-note');
+  genderNote.classList.add('hidden');
+
+  if (mode === 'aux') {
+    pronEl.textContent = "Auxiliary:";
+    blankEl.textContent = "AVOIR or ÊTRE?";
+    blankEl.className = "border-b-4 border-dashed border-indigo-400 px-6 py-1 text-indigo-700 min-w-[140px]";
+    ctxEl.textContent = "";
+  } else if (mode === 'participle') {
+    pronEl.textContent = "Past Participle:";
+    blankEl.textContent = "?";
+    blankEl.className = "border-b-4 border-dashed border-indigo-400 px-6 py-1 text-indigo-700 min-w-[120px]";
+    ctxEl.textContent = "";
+  } else if (mode === 'fix') {
+    pronEl.textContent = currentQuestion.pronounDisplay;
+    blankEl.textContent = currentQuestion.brokenPhrase;
+    blankEl.className = "bg-rose-100 border border-rose-300 px-4 py-1 text-rose-700 line-through rounded-xl";
+    ctxEl.textContent = verb.ctx;
+  } else {
+    pronEl.textContent = currentQuestion.pronounDisplay;
+    blankEl.textContent = "?";
+    blankEl.className = "border-b-4 border-dashed border-indigo-400 px-6 py-1 text-indigo-700 min-w-[140px]";
+    ctxEl.textContent = verb.ctx;
+    if (verb.aux === 'être' && (subj.fem || subj.plur)) {
+      genderNote.classList.remove('hidden');
+      genderNote.textContent = `✨ Agreement Tip: ${subj.fem ? 'Feminine (+e)' : ''} ${subj.plur ? 'Plural (+s)' : ''}`;
+    }
+  }
+
+  document.getElementById('btn-pet-power').disabled = false;
+
+  if (mode === 'type') {
+    document.getElementById('mc-container').classList.add('hidden');
+    document.getElementById('type-container').classList.remove('hidden');
+    document.getElementById('type-input').value = '';
+    document.getElementById('type-input').disabled = false;
+    setTimeout(() => document.getElementById('type-input').focus(), 40);
+  } else {
+    document.getElementById('mc-container').classList.remove('hidden');
+    document.getElementById('type-container').classList.add('hidden');
+    const mcEl = document.getElementById('mc-container');
+    mcEl.innerHTML = '';
+    currentQuestion.choices.forEach((choice, idx) => {
+      const btn = document.createElement('button');
+      btn.className = "mc-option btn-3d bg-slate-50 hover:bg-indigo-50 border-2 border-slate-200 hover:border-indigo-400 rounded-2xl p-3.5 text-left font-extrabold text-sm sm:text-base text-slate-800 flex items-center gap-3 transition";
+      btn.dataset.choice = choice;
+      btn.innerHTML = `<span class="w-7 h-7 rounded-xl bg-indigo-100 text-indigo-700 font-display text-xs flex items-center justify-center shrink-0">${['A','B','C','D'][idx]}</span><span>${choice}</span>`;
+      btn.onclick = () => checkAnswer(choice, btn);
+      mcEl.appendChild(btn);
+    });
+  }
+}
+
+function usePetQuizPower() {
+  if (!currentQuestion || questionAnswered || hintUsed) return;
+  hintUsed = true;
+  SFX.pop();
+  document.getElementById('btn-pet-power').disabled = true;
+  const { verb } = currentQuestion;
+  const hintBox = document.getElementById('q-hint-box');
+  hintBox.classList.remove('hidden');
+  hintBox.innerHTML = `🔮 <b>Companion Hint:</b> Uses <b>${verb.aux.toUpperCase()}</b>! Past participle starts with "<b>${verb.pp.slice(0,2)}...</b>"`;
+}
+
+function submitTypedAnswer() {
+  if (questionAnswered) return;
+  const val = document.getElementById('type-input').value.trim();
+  if (!val) return;
+  checkAnswer(val, null);
+}
+
+function checkAnswer(userChoice, clickedBtn) {
+  if (questionAnswered) return;
+  questionAnswered = true;
+  const { verb, answer, explanation } = currentQuestion;
+  const isCorrect = userChoice.toLowerCase().replace(/\s+/g, ' ').trim() === answer.toLowerCase().replace(/\s+/g, ' ').trim();
+  const bonuses = computeSquadBonuses();
+
+  const blankEl = document.getElementById('q-blank');
+  blankEl.textContent = answer;
+
+  if (currentQuestion.mode !== 'type') {
+    document.querySelectorAll('.mc-option').forEach(btn => {
+      btn.disabled = true;
+      if (btn.dataset.choice === answer) btn.className = "mc-option bg-emerald-100 border-2 border-emerald-500 rounded-2xl p-3.5 text-left font-extrabold text-sm sm:text-base text-emerald-900 flex items-center gap-3";
+      else if (btn === clickedBtn && !isCorrect) btn.className = "mc-option bg-rose-100 border-2 border-rose-500 rounded-2xl p-3.5 text-left font-extrabold text-sm sm:text-base text-rose-900 flex items-center gap-3";
+    });
+  } else {
+    document.getElementById('type-input').disabled = true;
+  }
+
+  const fbBox = document.getElementById('q-feedback');
+  fbBox.classList.remove('hidden');
+
+  if (isCorrect) {
+    SFX.correct();
+    state.streak += 1;
+    if (state.shieldCooldown > 0) state.shieldCooldown -= 1;
+    if (!state.masteredVerbs.includes(verb.inf)) state.masteredVerbs.push(verb.inf);
+
+    let treatMsg = "";
+    if (state.streak % 3 === 0) { state.treats += 1; treatMsg = " +1 🥐 Croissant!"; }
+
+    const activeBlitz = timerMode === 'blitz' && blitzSeconds > 0;
+    const earnedCoins = Math.round(25 * bonuses.coinMult * (1 + Math.min(state.streak, 15) * 0.1 * bonuses.streakMult) * (activeBlitz ? 1.5 : 1));
+    state.coins += earnedCoins;
+
+    getActivePets().forEach(pet => {
+      const { cap } = getPetVaultStats(pet);
+      pet.vaultCoins = Math.min(cap + bonuses.extraCap, +(pet.vaultCoins + 6).toFixed(1));
+      grantPetXP(pet, 15);
+    });
+
+    blankEl.className = "border-b-4 border-emerald-500 px-6 py-1 text-emerald-700 font-black";
+    fbBox.className = "max-w-2xl mx-auto mt-6 rounded-2xl p-4 border-2 bg-emerald-50 border-emerald-300 text-emerald-900 animate-pop";
+    document.getElementById('fb-title').textContent = `🎉 Bravo ! +${earnedCoins} Coins${treatMsg}`;
+    document.getElementById('fb-explanation').textContent = explanation;
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 32);
+  } else {
+    SFX.wrong();
+    state.missedCounts[verb.inf] = (state.missedCounts[verb.inf] || 0) + 1;
+    blankEl.className = "border-b-4 border-rose-500 px-6 py-1 text-rose-700 font-black";
+    fbBox.className = "max-w-2xl mx-auto mt-6 rounded-2xl p-4 border-2 bg-rose-50 border-rose-300 text-rose-900 animate-pop";
+
+    if (bonuses.hasShieldPet && state.shieldReady && state.streak > 0) {
+      state.shieldReady = false;
+      state.shieldCooldown = 4;
+      document.getElementById('fb-title').textContent = `🛡️ Streak Shield Saved Your ${state.streak} Streak!`;
+    } else {
+      state.streak = 0;
+      document.getElementById('fb-title').textContent = `❌ Correct: "${answer}"`;
+    }
+    document.getElementById('fb-explanation').textContent = explanation;
+  }
+
+  updateTopHUD();
+  saveGame();
+}
+
+/* ============================================================================
+   10. MY PETS, INSPECTOR MODAL & COIN VAULTS
+   ============================================================================ */
+function renderPetsHub() {
+  updateTopHUD();
+  const active = getActivePets();
+  const bonuses = computeSquadBonuses();
+  document.getElementById('ui-equipped-count').textContent = active.length;
+
+  let totalVault = 0;
+  active.forEach(p => totalVault += Math.floor(p.vaultCoins));
+  document.getElementById('ui-total-vault-pets').textContent = `🪙 ${totalVault}`;
+  document.getElementById('btn-claim-all-pets').disabled = totalVault <= 0;
+
+  const activeSummary = document.getElementById('pets-active-summary');
+  activeSummary.innerHTML = '';
+
+  for (let i = 0; i < 3; i++) {
+    const pet = active[i];
+    if (pet) {
+      const sp = getSpecies(pet.speciesId);
+      const { cap } = getPetVaultStats(pet);
+      const maxCap = cap + bonuses.extraCap;
+      const stored = Math.floor(pet.vaultCoins);
+      const pct = Math.min(100, Math.round((stored / maxCap) * 100));
+      activeSummary.innerHTML += `
+        <div class="rounded-2xl border-2 rarity-${sp.rarity} p-3.5 text-slate-800 flex items-center justify-between gap-2 shadow-sm">
+          <div class="flex items-center gap-2.5">
+            <div onclick="interactWithPet('${pet.uid}', event)" class="cursor-pointer hover:scale-110 transition-transform">${renderPetSVG(pet, 56)}</div>
+            <div>
+              <div class="font-display font-bold text-sm">${escapeHtml(getPetDisplayName(pet))}</div>
+              <div class="text-[10px] font-bold text-indigo-700">${sp.powerDesc} • ${'★'.repeat(pet.stars || 1)}</div>
+              <div class="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1">
+                <div class="h-full bg-amber-400" style="width:${pct}%"></div>
+              </div>
+            </div>
+          </div>
+          <button onclick="claimPetVault('${pet.uid}', event)" ${stored <= 0 ? 'disabled' : ''} class="btn-3d px-3 py-1.5 rounded-xl font-display font-bold text-xs ${stored > 0 ? 'bg-amber-400 text-indigo-950 animate-claim-pulse' : 'bg-slate-200 text-slate-400'}">
+            🪙 ${stored}/${maxCap}
+          </button>
+        </div>
+      `;
+    } else {
+      activeSummary.innerHTML += `<div class="rounded-2xl border-2 border-dashed border-indigo-300/60 p-4 text-center text-xs font-bold opacity-60 flex items-center justify-center">Empty Squad Slot</div>`;
+    }
+  }
+
+  const grid = document.getElementById('pets-collection-grid');
+  grid.innerHTML = '';
+  state.pets.forEach(pet => {
+    const sp = getSpecies(pet.speciesId);
+    const nat = getNature(pet.nature);
+    const isEquipped = state.activePetUids.includes(pet.uid);
+    const { rate, cap } = getPetVaultStats(pet);
+    const reqXp = pet.level * 50;
+    const xpPct = Math.min(100, Math.round((pet.xp / reqXp) * 100));
+    const lvlCost = pet.level * 55;
+    const starsStr = '★'.repeat(pet.stars || 1) + '☆'.repeat(5 - (pet.stars || 1));
+
+    let evoBtn = '';
+    if (pet.stage === 0) {
+      const ready = pet.level >= 5;
+      evoBtn = `<button onclick="evolvePet('${pet.uid}')" ${!ready ? 'disabled' : ''} class="w-full py-1.5 rounded-xl font-display font-bold text-xs ${ready ? 'bg-gradient-to-r from-amber-400 to-rose-500 text-white shadow' : 'bg-slate-200 text-slate-500'}">${ready ? `🌟 Evolve ➔ ${sp.evo1}` : `🔒 Evolve Lv.5`}</button>`;
+    } else if (pet.stage === 1) {
+      const ready = pet.level >= 10;
+      evoBtn = `<button onclick="evolvePet('${pet.uid}')" ${!ready ? 'disabled' : ''} class="w-full py-1.5 rounded-xl font-display font-bold text-xs ${ready ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow' : 'bg-slate-200 text-slate-500'}">${ready ? `👑 Mega Evolve ➔ ${sp.evo2}` : `🔒 Mega Evolve Lv.10`}</button>`;
+    } else {
+      evoBtn = `<div class="w-full py-1 rounded-xl bg-amber-100 text-amber-900 font-display font-bold text-xs text-center">👑 Stage III Max Form</div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = `rounded-3xl border-2 rarity-${sp.rarity} text-slate-800 p-4 shadow-sm flex flex-col justify-between space-y-3`;
+    card.innerHTML = `
+      <div>
+        <div class="flex items-center justify-between gap-1">
+          <span class="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-white border border-slate-200">${sp.rarity} • Stage ${pet.stage + 1}</span>
+          <span class="text-xs font-black text-amber-500 tracking-tighter" title="Awakening Stars">${starsStr}</span>
+        </div>
+        <div onclick="interactWithPet('${pet.uid}', event)" class="my-2 flex flex-col items-center cursor-pointer group">
+          <div class="animate-float group-hover:scale-110 transition-transform">${renderPetSVG(pet, 96)}</div>
+          <h3 class="font-display font-bold text-base text-slate-900 mt-1">${escapeHtml(getPetDisplayName(pet))}</h3>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="text-[10px] font-extrabold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">Nature: ${nat.name} (${nat.desc})</span>
+          </div>
+        </div>
+        <div class="bg-white/85 rounded-2xl p-2.5 border border-slate-200/80 space-y-1">
+          <div class="flex justify-between text-xs font-extrabold"><span class="text-indigo-800">Level ${pet.level}</span><span class="text-slate-500">${pet.xp}/${reqXp} XP</span></div>
+          <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 transition-all" style="width: ${xpPct}%"></div></div>
+          <div class="flex justify-between text-[10px] font-bold text-slate-600 pt-0.5"><span>Vault: +${rate}/2s (Cap ${cap})</span><span>${sp.powerDesc}</span></div>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="toggleEquipPet('${pet.uid}')" class="btn-3d py-1.5 rounded-xl font-display font-bold text-xs ${isEquipped ? 'bg-slate-700 text-white' : 'bg-emerald-600 text-white'}">${isEquipped ? '✓ Equipped' : '➕ Equip'}</button>
+          <button onclick="feedTreatToPet('${pet.uid}')" class="btn-3d py-1.5 rounded-xl font-display font-bold text-xs bg-rose-500 text-white">🥐 Feed (${state.treats})</button>
+        </div>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button onclick="levelUpPet('${pet.uid}')" ${state.coins < lvlCost ? 'disabled' : ''} class="btn-3d py-1.5 rounded-xl font-display font-bold text-[11px] bg-indigo-600 text-white disabled:opacity-45">⬆️ 🪙${lvlCost}</button>
+          <button onclick="openCustomizeModal('${pet.uid}')" class="btn-3d py-1.5 rounded-xl font-display font-bold text-[11px] bg-amber-400 text-indigo-950">🎨 Style</button>
+          <button onclick="openInspectModal('${pet.speciesId}', '${pet.uid}')" class="btn-3d py-1.5 rounded-xl font-display font-bold text-[11px] bg-slate-800 text-white">🔍 Tree</button>
+        </div>
+        ${evoBtn}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openInspectModal(speciesId, petUid = null) {
+  SFX.pop();
+  const sp = getSpecies(speciesId);
+  const pet = petUid ? state.pets.find(p => p.uid === petUid) : null;
+  const nat = pet ? getNature(pet.nature) : null;
+
+  document.getElementById('inspect-modal-body').innerHTML = `
+    <div class="rounded-2xl p-4 border-2 rarity-${sp.rarity} text-center space-y-2">
+      <div class="inline-block text-[10px] font-black uppercase px-3 py-0.5 rounded-full bg-white border">${sp.rarity} • ${sp.archetype.replace('_', ' ')}</div>
+      <div class="flex justify-center">${renderPetSVG({ speciesId: sp.id, stage: pet ? pet.stage : 0, accessory: pet ? pet.accessory : 'none' }, 110)}</div>
+      <h4 class="font-display font-bold text-xl text-slate-900">${pet ? escapeHtml(getPetDisplayName(pet)) : sp.name}</h4>
+      <p class="text-xs font-semibold text-slate-600 italic">"${sp.lore}"</p>
+      ${pet ? `<div class="text-xs font-extrabold text-indigo-800">Nature: ${nat.name} (${nat.desc}) • Stars: ${'★'.repeat(pet.stars || 1)}</div>` : ''}
+    </div>
+
+    <div>
+      <div class="text-xs font-extrabold uppercase text-slate-500 mb-2">3-Stage Evolution Lineage</div>
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="p-2.5 rounded-2xl border bg-slate-50">
+          <div class="flex justify-center">${renderPetSVG({ speciesId: sp.id, stage: 0 }, 64)}</div>
+          <div class="text-[10px] font-black text-indigo-700 mt-1">Stage I (Lv.1)</div>
+          <div class="text-xs font-bold text-slate-800 leading-tight">${sp.name}</div>
+        </div>
+        <div class="p-2.5 rounded-2xl border bg-indigo-50/70">
+          <div class="flex justify-center">${renderPetSVG({ speciesId: sp.id, stage: 1 }, 64)}</div>
+          <div class="text-[10px] font-black text-indigo-700 mt-1">Stage II (Lv.5)</div>
+          <div class="text-xs font-bold text-slate-800 leading-tight">${sp.evo1}</div>
+        </div>
+        <div class="p-2.5 rounded-2xl border bg-amber-50">
+          <div class="flex justify-center">${renderPetSVG({ speciesId: sp.id, stage: 2 }, 64)}</div>
+          <div class="text-[10px] font-black text-amber-700 mt-1">Stage III (Lv.10)</div>
+          <div class="text-xs font-bold text-slate-800 leading-tight">${sp.evo2}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-slate-100 rounded-2xl p-3 text-xs font-bold text-slate-700 flex justify-between">
+      <span>Companion Passive: <b class="text-indigo-800">${sp.powerDesc}</b></span>
+      <span>Base Vault: <b>+${sp.vaultRate}/2s</b></span>
+    </div>
+  `;
+  document.getElementById('modal-inspect').classList.remove('hidden');
+}
+
+function closeInspectModal() {
+  document.getElementById('modal-inspect').classList.add('hidden');
+}
+
+function toggleEquipPet(uid) {
+  const idx = state.activePetUids.indexOf(uid);
+  if (idx >= 0) state.activePetUids.splice(idx, 1);
+  else {
+    if (state.activePetUids.length >= 3) { showToast("Active Squad full (Max 3)!", "bg-amber-600"); return; }
+    state.activePetUids.push(uid);
+  }
+  SFX.pop();
+  updateTopHUD();
+  renderPetsHub();
+  saveGame();
+}
+
+function levelUpPet(uid) {
+  const pet = state.pets.find(p => p.uid === uid);
+  if (!pet) return;
+  const cost = pet.level * 55;
+  if (state.coins < cost) return;
+  state.coins -= cost;
+  pet.level += 1;
+  SFX.claim();
+  updateTopHUD();
+  renderPetsHub();
+  saveGame();
+}
+
+function evolvePet(uid) {
+  const pet = state.pets.find(p => p.uid === uid);
+  if (!pet) return;
+  if (pet.stage === 0 && pet.level >= 5) pet.stage = 1;
+  else if (pet.stage === 1 && pet.level >= 10) pet.stage = 2;
+  else return;
+  SFX.evolve();
+  triggerLightFlare();
+  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 65);
+  showToast(`🌟 Evolved into ${getPetDisplayName(pet)}!`, "bg-amber-500");
+  renderPetsHub();
+  saveGame();
+}
+
+/* Customization Modal */
+let customizingPetUid = null;
+function openCustomizeModal(uid) {
+  customizingPetUid = uid;
+  SFX.pop();
+  renderCustomizeModal();
+  document.getElementById('modal-customize').classList.remove('hidden');
+}
+function closeCustomizeModal() { document.getElementById('modal-customize').classList.add('hidden'); }
+
+function renderCustomizeModal() {
+  const pet = state.pets.find(p => p.uid === customizingPetUid);
+  if (!pet) return;
+  document.getElementById('customize-modal-body').innerHTML = `
+    <div class="flex flex-col items-center">
+      ${renderPetSVG(pet, 104)}
+      <div class="flex gap-2 mt-3 w-full">
+        <input id="cust-name-input" type="text" value="${escapeHtml(getPetDisplayName(pet))}" maxlength="20" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-bold text-xs" />
+        <button onclick="applyPetRename()" class="btn-3d bg-indigo-600 text-white font-bold text-xs px-3.5 rounded-xl">Save</button>
+      </div>
+    </div>
+    <div>
+      <div class="text-xs font-extrabold uppercase text-slate-500 mb-2">Hats &amp; Accessories</div>
+      <div class="grid grid-cols-3 gap-2">
+        ${ACCESSORIES.map(acc => {
+          const owned = state.unlockedAccessories.includes(acc.id);
+          const worn = pet.accessory === acc.id;
+          return `<button onclick="equipAcc('${acc.id}')" class="p-2 rounded-xl border text-center ${worn ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200'}">
+            <div class="text-lg">${acc.icon}</div><div class="text-[10px] font-extrabold">${acc.name}</div>
+            <div class="text-[9px] font-bold ${owned ? 'text-emerald-600' : 'text-amber-600'}">${worn ? 'Worn' : owned ? 'Equip' : `🪙 ${acc.cost}`}</div>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function applyPetRename() {
+  const pet = state.pets.find(p => p.uid === customizingPetUid);
+  const val = document.getElementById('cust-name-input').value.trim().slice(0, 20);
+  if (pet && val) { pet.nickname = val; SFX.pop(); renderCustomizeModal(); renderPetsHub(); saveGame(); }
+}
+
+function equipAcc(accId) {
+  const pet = state.pets.find(p => p.uid === customizingPetUid);
+  const acc = ACCESSORIES.find(a => a.id === accId);
+  if (!pet || !acc) return;
+  if (!state.unlockedAccessories.includes(accId)) {
+    if (state.coins < acc.cost) { showToast("Not enough coins!", "bg-rose-600"); return; }
+    state.coins -= acc.cost;
+    state.unlockedAccessories.push(accId);
+  }
+  pet.accessory = accId;
+  SFX.pop();
+  updateTopHUD();
+  renderCustomizeModal();
+  renderPetsHub();
+  saveGame();
+}
+
+/* ============================================================================
+   11. SATISFYING ARCANE HOLOGRAPHIC CARD PACK PULLS (3D TILT + STAR AWAKENING)
+   ============================================================================ */
+let gachaBusy = false;
+let currentPulledCards = [];
+
+function renderGachaOddsTable() {
+  document.getElementById('ui-pity-counter').textContent = `${state.pityCounter} left`;
+  const pityPct = Math.min(100, Math.round(((10 - state.pityCounter) / 10) * 100));
+  const pityBar = document.getElementById('ui-pity-bar');
+  if (pityBar) pityBar.style.width = `${pityPct}%`;
+
+  const table = document.getElementById('gacha-odds-table');
+  const pool = PET_SPECIES.filter(s => s.gachaWeight > 0);
+  const totalW = pool.reduce((sum, s) => sum + s.gachaWeight, 0);
+
+  table.innerHTML = pool.map(sp => {
+    const badgeColor = sp.rarity === 'Legendary' ? 'text-amber-300' : sp.rarity === 'Epic' ? 'text-purple-300' : sp.rarity === 'Rare' ? 'text-sky-300' : 'text-slate-300';
+    return `
+      <div onclick="openInspectModal('${sp.id}')" class="cursor-pointer hover:bg-white/20 transition rounded-xl bg-white/10 border border-white/15 px-3 py-1.5 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-white">${sp.name}</span>
+          <span class="text-[9px] font-black uppercase ${badgeColor}">${sp.rarity}</span>
+        </div>
+        <span class="font-extrabold text-amber-300">${((sp.gachaWeight / totalW) * 100).toFixed(2)}%</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function pullCardPack(count) {
+  if (gachaBusy) return;
+  const cost = count === 1 ? 100 : 900;
+  if (state.coins < cost) {
+    SFX.wrong();
+    showToast(`Need 🪙 ${cost} coins! Answer quiz questions to earn coins.`, "bg-rose-600");
+    return;
+  }
+
+  state.coins -= cost;
+  updateTopHUD();
+  gachaBusy = true;
+
+  // Phase 1: Dramatic Pack Charge, Foil Seam Split & Screen Shake
+  const packEl = document.getElementById('sealed-pack-stage');
+  const seamEl = document.getElementById('pack-tear-seam');
+  packEl.classList.remove('animate-pack-idle');
+  packEl.classList.add('animate-pack-rip');
+  if (seamEl) {
+    seamEl.classList.remove('hidden');
+    seamEl.classList.add('animate-seam-tear');
+  }
+  SFX.packRip();
+  setTimeout(() => triggerScreenShake(), 320);
+
+  const pool = PET_SPECIES.filter(s => s.gachaWeight > 0);
+  const pulled = [];
+
+  for (let i = 0; i < count; i++) {
+    state.pityCounter -= 1;
+    let activePool = pool;
+    if (state.pityCounter <= 0) {
+      activePool = pool.filter(s => s.rarity === 'Epic' || s.rarity === 'Legendary');
+      state.pityCounter = 10;
+    }
+    const sumW = activePool.reduce((acc, s) => acc + s.gachaWeight, 0);
+    let r = Math.random() * sumW;
+    let chosen = activePool[0];
+    for (const sp of activePool) {
+      if (r < sp.gachaWeight) { chosen = sp; break; }
+      r -= sp.gachaWeight;
+    }
+    if (chosen.rarity === 'Epic' || chosen.rarity === 'Legendary') state.pityCounter = 10;
+
+    const existing = state.pets.find(p => p.speciesId === chosen.id);
+    if (existing) {
+      grantPetXP(existing, 60);
+      const prevStars = existing.stars || 1;
+      const awakened = prevStars < 5;
+      if (awakened) existing.stars = prevStars + 1;
+      else state.coins += 65; // Max ★5 overflow converts to 65 Coins!
+      pulled.push({
+        species: chosen,
+        isDuplicate: true,
+        awakened,
+        newStars: existing.stars,
+        nature: getNature(existing.nature),
+        flipped: false
+      });
+    } else {
+      const created = addPetToCollection(chosen.id);
+      pulled.push({
+        species: chosen,
+        isDuplicate: false,
+        awakened: false,
+        newStars: 1,
+        nature: getNature(created.nature),
+        flipped: false
+      });
+    }
+  }
+
+  // Sort 10-pulls so highest rarity sits at the end for peak suspense!
+  const rarityOrder = { Common: 1, Rare: 2, Epic: 3, Legendary: 4 };
+  if (count > 1) {
+    pulled.sort((a, b) => rarityOrder[a.species.rarity] - rarityOrder[b.species.rarity]);
+  }
+
+  setTimeout(() => {
+    triggerLightFlare();
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, count === 10 ? 110 : 60);
+    packEl.classList.remove('animate-pack-rip');
+    packEl.classList.add('animate-pack-idle');
+    if (seamEl) {
+      seamEl.classList.add('hidden');
+      seamEl.classList.remove('animate-seam-tear');
+    }
+    gachaBusy = false;
+
+    currentPulledCards = pulled;
+    renderPulledCardsStage();
+    renderGachaOddsTable();
+    updateTopHUD();
+    saveGame();
+
+    if (count === 1) {
+      setTimeout(() => flipSingleCard(0), 260);
+    }
+  }, 760);
+}
+
+function handleCardTilt(e, el) {
+  const rect = el.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+  el.style.transform = `perspective(900px) rotateX(${(-y * 16).toFixed(1)}deg) rotateY(${(x * 16).toFixed(1)}deg) scale(1.03)`;
+}
+
+function resetCardTilt(el) {
+  el.style.transform = '';
+}
+
+function renderPulledCardsStage() {
+  const stage = document.getElementById('card-pull-stage');
+  const grid = document.getElementById('pulled-cards-grid');
+  stage.classList.remove('hidden');
+
+  if (currentPulledCards.length === 1) {
+    grid.className = "flex justify-center";
+  } else {
+    grid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4";
+  }
+
+  grid.innerHTML = currentPulledCards.map((item, idx) => {
+    const sp = item.species;
+    const wClass = currentPulledCards.length === 1 ? "w-64 h-84" : "w-full h-76";
+    const glowEmoji = sp.rarity === 'Legendary' ? '🌟' : sp.rarity === 'Epic' ? '🔮' : sp.rarity === 'Rare' ? '💠' : '✨';
+    const statusBadge = !item.isDuplicate
+      ? `<span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-white shadow">NEW!</span>`
+      : item.awakened
+      ? `<span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-indigo-950">★${item.newStars} +60 XP</span>`
+      : `<span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">+65🪙 +60XP</span>`;
+
+    return `
+      <div class="tcg-scene ${wClass} cursor-pointer transition-transform duration-150"
+           onmousemove="handleCardTilt(event, this)"
+           onmouseleave="resetCardTilt(this)"
+           onclick="flipSingleCard(${idx})">
+        <div id="tcg-card-${idx}" class="tcg-card ${item.flipped ? 'is-flipped' : ''}">
+          <!-- FACE DOWN CARD BACK WITH RARITY AURA -->
+          <div class="tcg-face tcg-back beam-${sp.rarity} flex flex-col items-center justify-between p-4 text-white">
+            <div class="absolute inset-0 holo-foil"></div>
+            <span class="relative z-10 text-[10px] font-black uppercase tracking-widest text-amber-300 bg-black/35 px-2.5 py-0.5 rounded-full">
+              ${glowEmoji} ${sp.rarity} Aura
+            </span>
+            <div class="relative z-10 my-auto flex flex-col items-center">
+              <div class="w-16 h-16 rounded-full bg-amber-400/20 border-2 border-amber-300 flex items-center justify-center text-3xl animate-pulse">
+                🃏
+              </div>
+              <span class="font-display font-bold text-sm text-amber-200 mt-2">Tap to Flip</span>
+            </div>
+            <span class="relative z-10 text-[10px] font-bold text-indigo-200">Académie Arcane</span>
+          </div>
+
+          <!-- FACE UP HOLOGRAPHIC PET CARD -->
+          <div class="tcg-face tcg-front border-4 rarity-${sp.rarity} text-slate-900 flex flex-col items-center justify-between p-3.5 text-center">
+            <div class="absolute inset-0 holo-foil"></div>
+            <div class="relative z-10 w-full flex items-center justify-between gap-1">
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-white/90 border border-slate-300">${sp.rarity}</span>
+              ${statusBadge}
+            </div>
+
+            <div class="relative z-10 my-auto flex flex-col items-center">
+              <div class="animate-float">${renderPetSVG({ speciesId: sp.id, stage: 0 }, currentPulledCards.length === 1 ? 116 : 86)}</div>
+              <h4 class="font-display font-bold text-sm sm:text-base text-slate-900 mt-1 leading-tight">${sp.name}</h4>
+              <span class="text-[10px] font-extrabold text-purple-700">Nature: ${item.nature.name}</span>
+              <p class="text-[11px] font-extrabold text-indigo-700 mt-0.5">${sp.powerDesc}</p>
+            </div>
+
+            <div class="relative z-10 w-full bg-white/85 rounded-xl py-1 px-2 text-[10px] font-bold text-slate-600 border border-slate-200">
+              Vault: +${sp.vaultRate}/2s • Cap ${sp.vaultCap}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function flipSingleCard(idx) {
+  const item = currentPulledCards[idx];
+  if (!item || item.flipped) return;
+  item.flipped = true;
+  const cardEl = document.getElementById(`tcg-card-${idx}`);
+  if (cardEl) cardEl.classList.add('is-flipped');
+
+  SFX.cardFlip(item.species.rarity);
+  if (item.species.rarity === 'Legendary' || item.species.rarity === 'Epic') {
+    triggerLightFlare();
+    if (item.species.rarity === 'Legendary') triggerScreenShake();
+    const rect = cardEl ? cardEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
+    spawnConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2, item.species.rarity === 'Legendary' ? 75 : 40);
+  }
+}
+
+function flipAllPulledCards() {
+  currentPulledCards.forEach((item, idx) => {
+    if (!item.flipped) {
+      setTimeout(() => flipSingleCard(idx), idx * 110);
+    }
+  });
+}
+
+function closeCardPullStage() {
+  SFX.pop();
+  document.getElementById('card-pull-stage').classList.add('hidden');
+}
+
+function addPetToCollection(speciesId) {
+  if (!state.unlockedSpecies.includes(speciesId)) state.unlockedSpecies.push(speciesId);
+  const newPet = {
+    uid: `pet_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+    speciesId,
+    nickname: "",
+    nature: rollRandomNature(),
+    stars: 1,
+    level: 1,
+    xp: 0,
+    stage: 0,
+    accessory: "none",
+    vaultCoins: 12,
+    affection: 1,
+    happyTimer: 0
+  };
+  state.pets.push(newPet);
+  if (state.activePetUids.length < 3) state.activePetUids.push(newPet.uid);
+  return newPet;
+}
+
+/* ============================================================================
+   12. THEME-ONLY SHOP
+   ============================================================================ */
+function buyTreatPack(qty, cost) {
+  if (state.coins < cost) {
+    SFX.wrong();
+    showToast("Not enough coins!", "bg-rose-600");
+    return;
+  }
+  state.coins -= cost;
+  state.treats += qty;
+  SFX.claim();
+  showToast(`🥐 Bought ${qty} Croissants!`, "bg-amber-600");
+  updateTopHUD();
+  saveGame();
+}
+
+function renderShop() {
+  const grid = document.getElementById('themes-shop-grid');
+  grid.innerHTML = APP_THEMES.map(th => {
+    const owned = state.unlockedThemes.includes(th.id);
+    const equipped = state.activeTheme === th.id;
+
+    let actionBtn = '';
+    if (equipped) {
+      actionBtn = `<button disabled class="w-full py-2.5 rounded-2xl font-display font-bold text-xs bg-emerald-600 text-white shadow">✓ Active Theme</button>`;
+    } else if (owned) {
+      actionBtn = `<button onclick="equipTheme('${th.id}')" class="btn-3d w-full py-2.5 rounded-2xl font-display font-bold text-xs bg-indigo-600 hover:bg-indigo-500 text-white shadow">🎨 Equip Theme</button>`;
+    } else {
+      actionBtn = `<button onclick="buyTheme('${th.id}')" ${state.coins < th.cost ? 'disabled' : ''} class="btn-3d w-full py-2.5 rounded-2xl font-display font-bold text-xs bg-gradient-to-r from-amber-400 to-orange-500 text-indigo-950 disabled:opacity-45 shadow">Unlock Theme • 🪙 ${th.cost}</button>`;
+    }
+
+    return `
+      <div class="theme-surface rounded-3xl border-2 ${equipped ? 'border-amber-400' : ''} p-5 flex flex-col justify-between space-y-4">
+        <div>
+          <div class="h-24 rounded-2xl p-3 flex items-end justify-between shadow-inner border border-black/10" style="background: ${th.vars['--hero-grad']};">
+            <span class="text-[10px] font-black uppercase tracking-wider bg-black/35 text-white px-2.5 py-1 rounded-full backdrop-blur-sm">
+              ${owned ? 'Unlocked' : 'Boutique Exclusive'}
+            </span>
+            <div class="flex gap-1.5">
+              ${th.previewColors.map(c => `<span class="w-5 h-5 rounded-full border-2 border-white shadow" style="background:${c}"></span>`).join('')}
+            </div>
+          </div>
+
+          <h3 class="font-display font-bold text-lg mt-3">${th.name}</h3>
+          <p class="text-xs font-semibold opacity-70 mt-1">${th.desc}</p>
+        </div>
+
+        <div>${actionBtn}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================================
+   13. INTERACTIVE ZOO (PAID HABITATS) & HYBRID BREEDING LAB
+   ============================================================================ */
+let zooPetPositions = {};
+let zooAnimTimer = null;
+let previewingHabitatId = "cafe";
+
+function selectZooHabitat(habId) {
+  previewingHabitatId = habId;
+  SFX.pop();
+  if (state.unlockedHabitats.includes(habId)) {
+    state.zooHabitat = habId;
+    saveGame();
+  }
+  renderZoo();
+}
+
+function unlockSelectedHabitat() {
+  const hab = ZOO_HABITATS.find(h => h.id === previewingHabitatId);
+  if (!hab || state.unlockedHabitats.includes(hab.id)) return;
+  if (state.coins < hab.cost) {
+    SFX.wrong();
+    showToast(`Need 🪙 ${hab.cost} coins to unlock ${hab.name}!`, "bg-rose-600");
+    return;
+  }
+  state.coins -= hab.cost;
+  state.unlockedHabitats.push(hab.id);
+  state.zooHabitat = hab.id;
+  SFX.evolve();
+  triggerLightFlare();
+  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 60);
+  showToast(`🏡 Unlocked ${hab.name}! (${hab.bonusDesc})`, "bg-emerald-600");
+  updateTopHUD();
+  renderZoo();
+  saveGame();
+}
+
+function throwZooToy() {
+  if (!state.unlockedHabitats.includes(previewingHabitatId)) {
+    showToast("Unlock this habitat first to play with your pets here!", "bg-amber-600");
+    return;
+  }
+  SFX.pop();
+  const toy = document.getElementById('zoo-toy');
+  const tx = 18 + Math.random() * 64;
+  const ty = 32 + Math.random() * 44;
+  toy.classList.remove('hidden');
+  toy.style.left = `${tx}%`;
+  toy.style.top = `${ty}%`;
+
+  state.pets.forEach((p, idx) => {
+    zooPetPositions[p.uid] = {
+      x: Math.max(8, Math.min(82, tx + (idx % 2 === 0 ? -7 : 7))),
+      y: Math.max(20, Math.min(72, ty + (idx % 3 - 1) * 6))
+    };
+  });
+  renderZooPetsLayer();
+  showToast("🧶 Toy ball thrown! Your companions chased after it!", "bg-amber-600");
+}
+
+function updateDancePartyButton() {
+  const btn = document.getElementById('btn-dance-party');
+  if (!btn) return;
+  const rem = Math.ceil((dancePartyCooldownUntil - Date.now()) / 1000);
+  if (rem > 0) {
+    btn.disabled = true;
+    btn.textContent = `💃 Dance (${rem}s)`;
+  } else {
+    btn.disabled = false;
+    btn.textContent = `💃 Dance Party`;
+  }
+}
+
+function triggerZooDanceParty() {
+  if (Date.now() < dancePartyCooldownUntil) return;
+  if (!state.unlockedHabitats.includes(previewingHabitatId)) {
+    showToast("Unlock this habitat first!", "bg-amber-600");
+    return;
+  }
+  dancePartyCooldownUntil = Date.now() + 60000; // 60s anti-spam cooldown
+  updateDancePartyButton();
+  SFX.evolve();
+  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 55);
+  showToast("💃 Dance Party! Every companion gained +12 XP!", "bg-fuchsia-600");
+  state.pets.forEach(p => grantPetXP(p, 12));
+  renderZooPetsLayer();
+  saveGame();
+}
+
+function renderZooPetsLayer() {
+  const layer = document.getElementById('zoo-pets-layer');
+  if (!layer) return;
+  layer.innerHTML = state.pets.map((pet, idx) => {
+    if (!zooPetPositions[pet.uid]) {
+      zooPetPositions[pet.uid] = { x: 12 + ((idx * 19) % 72), y: 26 + ((idx * 17) % 46) };
+    }
+    const pos = zooPetPositions[pet.uid];
+    return `
+      <div onclick="interactWithPet('${pet.uid}', event)"
+           class="absolute cursor-pointer flex flex-col items-center transition-all duration-700 hover:scale-110 select-none"
+           style="left: ${pos.x}%; top: ${pos.y}%;">
+        <div class="animate-float">${renderPetSVG(pet, 70)}</div>
+        <span class="text-[10px] font-extrabold bg-white/90 text-slate-800 px-2 py-0.5 rounded-full shadow border border-slate-200 -mt-1">
+          ${escapeHtml(getPetDisplayName(pet))}
+        </span>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderZoo() {
+  if (!previewingHabitatId) previewingHabitatId = state.zooHabitat || "cafe";
+  const currentHab = ZOO_HABITATS.find(h => h.id === previewingHabitatId) || ZOO_HABITATS[0];
+  const activeHab = ZOO_HABITATS.find(h => h.id === state.zooHabitat) || ZOO_HABITATS[0];
+  const isUnlocked = state.unlockedHabitats.includes(currentHab.id);
+
+  // Render Habitat Selector Buttons with Coin Cost
+  const btnsEl = document.getElementById('zoo-habitat-buttons');
+  btnsEl.innerHTML = `<span class="text-xs font-black uppercase opacity-50 mr-1">Habitats:</span>` + ZOO_HABITATS.map(h => {
+    const owned = state.unlockedHabitats.includes(h.id);
+    const selected = h.id === previewingHabitatId;
+    const badge = owned ? (state.zooHabitat === h.id ? ' ✓' : '') : ` 🔒🪙${h.cost}`;
+    return `<button onclick="selectZooHabitat('${h.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${selected ? 'bg-emerald-600 text-white shadow' : owned ? 'bg-slate-100 text-slate-800 hover:bg-emerald-50' : 'bg-amber-50 border border-amber-300 text-amber-900 hover:bg-amber-100'}">
+      ${h.name}${badge}
+    </button>`;
+  }).join('');
+
+  // Status Bar
+  document.getElementById('zoo-habitat-status').innerHTML = `
+    <span class="text-emerald-700">Active Habitat: <b>${activeHab.name}</b> (${activeHab.bonusDesc})</span>
+    <span class="opacity-65">${state.unlockedHabitats.length}/${ZOO_HABITATS.length} Habitats Unlocked</span>
+  `;
+
+  // Enclosure & Scenery
+  const enc = document.getElementById('zoo-enclosure');
+  enc.className = currentHab.encClass;
+  document.getElementById('zoo-scenery').innerHTML = currentHab.scenerySVG;
+
+  // Locked Overlay
+  const overlay = document.getElementById('zoo-locked-overlay');
+  if (!isUnlocked) {
+    overlay.classList.remove('hidden');
+    document.getElementById('zoo-locked-title').textContent = `${currentHab.name}`;
+    document.getElementById('zoo-locked-bonus').textContent = `Permanent Habitat Bonus: ${currentHab.bonusDesc}`;
+    const unlockBtn = document.getElementById('zoo-unlock-btn');
+    unlockBtn.textContent = `Unlock Habitat • 🪙 ${currentHab.cost}`;
+    unlockBtn.disabled = state.coins < currentHab.cost;
+    unlockBtn.className = `btn-3d mt-4 bg-gradient-to-r from-amber-400 to-orange-500 text-indigo-950 font-display font-bold px-6 py-3 rounded-2xl text-sm shadow-xl ${state.coins < currentHab.cost ? 'opacity-50' : ''}`;
+  } else {
+    overlay.classList.add('hidden');
+  }
+
+  renderZooPetsLayer();
+  if (!zooAnimTimer) {
+    zooAnimTimer = setInterval(() => {
+      if (document.getElementById('view-zoo').classList.contains('hidden')) return;
+      state.pets.forEach(p => {
+        if (!zooPetPositions[p.uid]) zooPetPositions[p.uid] = { x: 40, y: 45 };
+        zooPetPositions[p.uid].x = Math.max(8, Math.min(82, zooPetPositions[p.uid].x + (Math.random() - 0.5) * 14));
+        zooPetPositions[p.uid].y = Math.max(20, Math.min(72, zooPetPositions[p.uid].y + (Math.random() - 0.5) * 10));
+      });
+      renderZooPetsLayer();
+    }, 2600);
+  }
+
+  document.getElementById('codex-progress').textContent = `${state.unlockedSpecies.length}/${PET_SPECIES.length}`;
+  document.getElementById('codex-grid').innerHTML = PET_SPECIES.map(sp => {
+    const unlocked = state.unlockedSpecies.includes(sp.id);
+    return `<div onclick="openInspectModal('${sp.id}')" class="cursor-pointer hover:scale-105 transition-transform rounded-2xl p-2.5 border text-center text-slate-800 ${unlocked ? `rarity-${sp.rarity}` : 'bg-slate-100 opacity-55'}">
+      <div class="flex justify-center">${renderPetSVG({ speciesId: sp.id, stage: 0 }, 56)}</div>
+      <div class="text-[10px] font-extrabold mt-1 truncate">${unlocked ? sp.name : '???'}</div>
+      <div class="text-[9px] font-bold text-slate-500">${sp.gachaWeight === 0 ? 'Hybrid' : sp.rarity}</div>
+    </div>`;
+  }).join('');
+}
+
+/* Breeding Lab */
+let activeEggResult = null;
+let eggProgress = 0;
+
+function renderBreedingLab() {
+  const eligible = state.pets.filter(p => p.level >= 3);
+  const selA = document.getElementById('breed-parent-a');
+  const selB = document.getElementById('breed-parent-b');
+  if (eligible.length < 2) {
+    selA.innerHTML = `<option value="">Requires 2+ Lv.3 Pets</option>`;
+    selB.innerHTML = `<option value="">Requires 2+ Lv.3 Pets</option>`;
+  } else {
+    selA.innerHTML = eligible.map((p, i) => `<option value="${p.uid}" ${i === 0 ? 'selected' : ''}>${escapeHtml(getPetDisplayName(p))} (Lv.${p.level})</option>`).join('');
+    selB.innerHTML = eligible.map((p, i) => `<option value="${p.uid}" ${i === 1 ? 'selected' : ''}>${escapeHtml(getPetDisplayName(p))} (Lv.${p.level})</option>`).join('');
+  }
+  renderBreedingPreview();
+
+  document.getElementById('breed-recipes-grid').innerHTML = BREEDING_RECIPES.map(r => {
+    const resSp = getSpecies(r.result);
+    return `
+      <div onclick="openInspectModal('${resSp.id}')" class="cursor-pointer hover:scale-[1.01] transition rounded-2xl border-2 rarity-Legendary p-3 text-slate-800 flex items-center justify-between gap-3">
+        <div>
+          <div class="text-[10px] font-black uppercase text-amber-700">Mythic Hybrid Recipe</div>
+          <div class="font-bold text-xs mt-0.5">${r.label}</div>
+          <div class="font-display font-bold text-sm text-indigo-900 mt-1">➔ ${resSp.name} (${resSp.powerDesc})</div>
+        </div>
+        <div>${renderPetSVG({ speciesId: resSp.id, stage: 0 }, 58)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderBreedingPreview() {
+  const petA = state.pets.find(p => p.uid === document.getElementById('breed-parent-a').value);
+  const petB = state.pets.find(p => p.uid === document.getElementById('breed-parent-b').value);
+  document.getElementById('breed-preview-a').innerHTML = petA ? `${renderPetSVG(petA, 84)}<div class="text-xs font-bold mt-1">${escapeHtml(getPetDisplayName(petA))}</div>` : '';
+  document.getElementById('breed-preview-b').innerHTML = petB ? `${renderPetSVG(petB, 84)}<div class="text-xs font-bold mt-1">${escapeHtml(getPetDisplayName(petB))}</div>` : '';
+}
+
+function startBreeding() {
+  if (activeEggResult) {
+    showToast("Tap the incubating egg first to hatch your current fusion!", "bg-amber-600");
+    return;
+  }
+  const uidA = document.getElementById('breed-parent-a').value;
+  const uidB = document.getElementById('breed-parent-b').value;
+  if (!uidA || !uidB || uidA === uidB) {
+    SFX.wrong();
+    showToast("Select two different Lv.3+ pets!", "bg-rose-600");
+    return;
+  }
+  if (state.coins < 550) {
+    SFX.wrong();
+    showToast("Need 🪙 550 coins!", "bg-rose-600");
+    return;
+  }
+  state.coins -= 550;
+  updateTopHUD();
+
+  const petA = state.pets.find(p => p.uid === uidA);
+  const petB = state.pets.find(p => p.uid === uidB);
+  const recipe = BREEDING_RECIPES.find(r => (r.p1 === petA.speciesId && r.p2 === petB.speciesId) || (r.p2 === petA.speciesId && r.p1 === petB.speciesId));
+  activeEggResult = recipe ? recipe.result : (Math.random() < 0.5 ? "caniche_draconique" : "griffon_patissier");
+  eggProgress = 0;
+  SFX.packRip();
+  document.getElementById('btn-start-breed').disabled = true;
+  document.getElementById('incubator-bar-wrap').classList.remove('hidden');
+  document.getElementById('incubator-bar').style.width = '0%';
+  document.getElementById('incubator-hint').textContent = "Tap the glowing egg rapidly to hatch!";
+}
+
+function tapIncubatorEgg() {
+  if (!activeEggResult) return;
+  eggProgress += 25;
+  SFX.pop();
+  document.getElementById('incubator-bar').style.width = `${eggProgress}%`;
+  if (eggProgress >= 100) {
+    const sp = getSpecies(activeEggResult);
+    addPetToCollection(sp.id);
+    activeEggResult = null;
+    document.getElementById('btn-start-breed').disabled = false;
+    document.getElementById('incubator-bar-wrap').classList.add('hidden');
+    document.getElementById('incubator-hint').textContent = "Select two Level 3+ pets to fuse!";
+    SFX.evolve();
+    triggerLightFlare();
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 75);
+    showToast(`🧬 Hatched Hybrid ${sp.name}!`, "bg-fuchsia-600");
+    updateTopHUD();
+    renderBreedingLab();
+    renderZoo();
+    saveGame();
+  }
+}
+
+/* ============================================================================
+   14. STUDY GUIDE MODAL (50 VERBS ONLY)
+   ============================================================================ */
+function openCheatSheet() { SFX.pop(); filterCheatSheet(); document.getElementById('modal-cheatsheet').classList.remove('hidden'); }
+function closeCheatSheet() { document.getElementById('modal-cheatsheet').classList.add('hidden'); }
+function filterCheatSheet() {
+  const q = (document.getElementById('cheatsheet-search').value || '').toLowerCase();
+  document.getElementById('cheatsheet-verb-grid').innerHTML = VERB_DB.filter(v => v.inf.toLowerCase().includes(q) || v.en.toLowerCase().includes(q) || v.pp.toLowerCase().includes(q)).map(v => `
+    <div class="p-2 rounded-xl border ${v.aux === 'être' ? 'bg-rose-50 border-rose-200' : 'bg-slate-50 border-slate-200'}">
+      <div class="font-extrabold">${v.inf} <span class="text-[10px] text-slate-500">(${v.en})</span></div>
+      <div class="font-bold ${v.aux === 'être' ? 'text-rose-700' : 'text-indigo-700'}">${v.aux} + ${v.pp}</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================================
+   INIT ON LOAD
+   ============================================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  loadGame();
+  previewingHabitatId = state.zooHabitat || "cafe";
+  applyActiveTheme();
+  updateTopHUD();
+  nextQuestion();
+});
+</script>
+</body>
+</html>
